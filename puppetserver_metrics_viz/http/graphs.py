@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 def single_datapoint_bar_graph(http_metrics):
     requests = map(lambda x: x.route_id, http_metrics)
@@ -17,6 +18,9 @@ def single_datapoint_bar_graph(http_metrics):
 
 def multi_datapoint_line_graph(http_metrics_series):
     x_pos = np.arange(len(http_metrics_series))
+
+    x_labels = map(lambda x: time.strftime('%H:%M:%S', time.localtime(x)),
+                   http_metrics_series.get_timestamps())
     # TODO: use keys from metrics maps rather than hard-coding them here
     catalog = http_metrics_series.get_data_points('puppet-v3-catalog-/*/', 'mean')
     plt.plot(x_pos, catalog, label='catalog')
@@ -31,6 +35,8 @@ def multi_datapoint_line_graph(http_metrics_series):
 
     # TODO: make x-axis use timestamps?
     plt.xlabel('Data points')
+    plt.xticks(x_pos, x_labels)
+    plt.locator_params(axis='x', nbins=10)
     plt.ylabel('Mean Response Time (ms)')
     plt.title('Mean Request Response Time')
     plt.legend(loc='upper left')

@@ -1,7 +1,8 @@
 from puppetserver_metrics_viz.http.metric import HttpMetric
 
 class HttpMetricMap:
-    def __init__(self, json_data):
+    def __init__(self, timestamp, json_data):
+        self.timestamp = timestamp
         http_metrics = map(lambda x: HttpMetric(x), json_data)
         # TODO: make 'total' filtering and cutoff threshold configurable
         http_metrics = filter(lambda x: x.route_id != 'total', http_metrics)
