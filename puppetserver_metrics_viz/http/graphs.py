@@ -14,28 +14,19 @@ def single_datapoint_bar_graph(http_metrics):
     plt.tight_layout()
     plt.show()
 
-# TODO: move this into HttpMetricMap
-def __get_data_point_fn_for(route_id):
-    def __get_data_point_for(x):
-        if not (route_id in x.keys()):
-            return 0
-        else:
-            return x[route_id].mean
-    return __get_data_point_for
-
 
 def multi_datapoint_line_graph(http_metrics_series):
     x_pos = np.arange(len(http_metrics_series))
     # TODO: use keys from metrics maps rather than hard-coding them here
-    catalog = map(__get_data_point_fn_for('puppet-v3-catalog-/*/'), http_metrics_series)
+    catalog = http_metrics_series.get_data_points('puppet-v3-catalog-/*/', 'mean')
     plt.plot(x_pos, catalog, label='catalog')
-    node = map(__get_data_point_fn_for('puppet-v3-node-/*/'), http_metrics_series)
+    node = http_metrics_series.get_data_points('puppet-v3-node-/*/', 'mean')
     plt.plot(x_pos, node, label='node')
-    report = map(__get_data_point_fn_for('puppet-v3-report-/*/'), http_metrics_series)
+    report = http_metrics_series.get_data_points('puppet-v3-report-/*/', 'mean')
     plt.plot(x_pos, report, label='report')
-    file_metadatas = map(__get_data_point_fn_for('puppet-v3-file_metadatas-/*/'), http_metrics_series)
+    file_metadatas = http_metrics_series.get_data_points('puppet-v3-file_metadatas-/*/', 'mean')
     plt.plot(x_pos, file_metadatas, label='file_metadatas')
-    file_metadata = map(__get_data_point_fn_for('puppet-v3-file_metadata-/*/'), http_metrics_series)
+    file_metadata = http_metrics_series.get_data_points('puppet-v3-file_metadata-/*/', 'mean')
     plt.plot(x_pos, file_metadata, label='file_metadata')
 
     # TODO: make x-axis use timestamps?
