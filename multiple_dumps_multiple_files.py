@@ -27,4 +27,15 @@ def read_data(f):
 data = map(read_data, files)
 
 http_metrics_series = http.HttpMetricsSeries(data)
-http.multi_datapoint_line_graph(http_metrics_series)
+http.multi_datapoint_line_graph(http_metrics_series,
+                                {'data_field': 'mean',
+                                 'data_label': 'Mean',
+                                 'img_file': './target/http_mean.png'})
+http.multi_datapoint_line_graph(http_metrics_series,
+                                {'data_field': 'aggregate',
+                                 'data_label': 'Aggregate',
+                                 'img_file': './target/http_aggregate.png'})
+http.multi_datapoint_line_graph(http_metrics_series,
+                                {'data_field': 'count',
+                                 'data_label': 'Count - ',
+                                 'img_file': './target/http_count.png'})
