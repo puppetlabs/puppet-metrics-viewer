@@ -3,6 +3,7 @@ import argparse
 import os
 
 import puppetserver_metrics_viz.http as http
+import puppetserver_metrics_viz.mem as mem
 
 parser = argparse.ArgumentParser(description='Produce visualizations for a series of JSON metrics dumps.')
 requiredNamed = parser.add_argument_group('required named arguments')
@@ -39,3 +40,8 @@ http.multi_datapoint_line_graph(http_metrics_series,
                                 {'data_field': 'count',
                                  'data_label': 'Count - ',
                                  'img_file': './target/http_count.png'})
+
+memory_metrics_series = mem.MemoryMetricsSeries(data)
+mem.multi_datapoint_line_graph(memory_metrics_series,
+                               {'img_file': './target/memory_usage.png'})
+

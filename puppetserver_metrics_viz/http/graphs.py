@@ -37,7 +37,6 @@ def multi_datapoint_line_graph(http_metrics_series, config):
     file_metadata = http_metrics_series.get_data_points('puppet-v3-file_metadata-/*/', data_field)
     plt.plot(x_pos, file_metadata, label='file_metadata')
 
-    # TODO: make x-axis use timestamps?
     plt.xlabel('Data points')
     plt.xticks(x_pos, x_labels)
     plt.locator_params(axis='x', nbins=10)
