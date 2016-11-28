@@ -5,7 +5,10 @@ import os
 import puppetserver_metrics_viz.http as http
 
 parser = argparse.ArgumentParser(description='Produce visualizations for a series of JSON metrics dumps.')
-parser.add_argument('--file-prefix', help='File path prefix for files containing metrics data.  All files existing at the specified path that begin with this prefix will be loaded, in order by filename.', )
+requiredNamed = parser.add_argument_group('required named arguments')
+requiredNamed.add_argument('--file-prefix',
+                           help='File path prefix for files containing metrics data.  All files existing at the specified path that begin with this prefix will be loaded, in order by filename.',
+                           required=True)
 args = parser.parse_args()
 
 prefix = args.file_prefix
