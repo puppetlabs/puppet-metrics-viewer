@@ -19,6 +19,15 @@ def multi_datapoint_line_graph(memory_metrics_series, config):
     heap_used = memory_metrics_series.get_data_points('heap', 'used')
     plt.plot(x_pos, heap_used, label='Heap - Used')
 
+    nonheap_max = memory_metrics_series.get_data_points('nonheap', 'max')
+    plt.plot(x_pos, nonheap_max, label='Non-Heap - Max')
+    nonheap_init = memory_metrics_series.get_data_points('nonheap', 'init')
+    plt.plot(x_pos, nonheap_init, label='Non-Heap - Init')
+    nonheap_committed = memory_metrics_series.get_data_points('nonheap', 'committed')
+    plt.plot(x_pos, nonheap_committed, label='Non-Heap - Committed')
+    nonheap_used = memory_metrics_series.get_data_points('nonheap', 'used')
+    plt.plot(x_pos, nonheap_used, label='Non-Heap - Used')
+
     plt.xlabel('Data points')
     plt.xticks(x_pos, x_labels)
     plt.locator_params(axis='x', nbins=10)
