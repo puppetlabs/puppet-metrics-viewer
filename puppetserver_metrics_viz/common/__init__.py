@@ -1,7 +1,9 @@
-class Common:
-    @staticmethod
-    def get_timestamp(json_data):
-        jvm_metrics = json_data['status-service']['status']['experimental']['jvm-metrics']
-        start_time = jvm_metrics['start-time-ms'] / 1000
-        up_time = jvm_metrics['up-time-ms'] / 1000
-        return start_time + up_time
+#
+# import puppetserver_metrics_viz.http as http
+# import puppetserver_metrics_viz.mem as mem
+# import puppetserver_metrics_viz.jruby as jruby
+#
+# class Common:
+#
+#
+#

@@ -1,10 +1,10 @@
-from puppetserver_metrics_viz.common import Common
+from puppetserver_metrics_viz.common.utils import Utils
 from puppetserver_metrics_viz.jruby.metric import JRubyMetric
 
 class JRubyMetricsSeries:
     @staticmethod
     def __create_metric_map(json_data):
-        timestamp = Common.get_timestamp(json_data)
+        timestamp = Utils.get_timestamp(json_data)
         return JRubyMetric(timestamp, json_data['pe-jruby-metrics']['status']['experimental']['metrics'])
 
     @staticmethod
