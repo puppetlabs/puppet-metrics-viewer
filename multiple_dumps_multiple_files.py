@@ -27,21 +27,48 @@ def read_data(f):
 
 data = map(read_data, files)
 
+# TODO: refactor this logic into a class to make it more re-usable
+
+http_mean_img = 'http_mean.png'
+http_aggregate_img = 'http_aggregate.png'
+http_count_img = 'http_count.png'
+memory_usage_img = 'memory_usage.png'
+
 http_metrics_series = http.HttpMetricsSeries(data)
 http.multi_datapoint_line_graph(http_metrics_series,
                                 {'data_field': 'mean',
                                  'data_label': 'Mean',
-                                 'img_file': './target/http_mean.png'})
+                                 'img_file': './target/{0}'.format(http_mean_img)})
 http.multi_datapoint_line_graph(http_metrics_series,
                                 {'data_field': 'aggregate',
                                  'data_label': 'Aggregate',
-                                 'img_file': './target/http_aggregate.png'})
+                                 'img_file': './target/{0}'.format(http_aggregate_img)})
 http.multi_datapoint_line_graph(http_metrics_series,
                                 {'data_field': 'count',
                                  'data_label': 'Count - ',
-                                 'img_file': './target/http_count.png'})
+                                 'img_file': './target/{0}'.format(http_count_img)})
 
 memory_metrics_series = mem.MemoryMetricsSeries(data)
 mem.multi_datapoint_line_graph(memory_metrics_series,
-                               {'img_file': './target/memory_usage.png'})
+                               {'img_file': './target/{0}'.format(memory_usage_img)})
+
+# TODO: gussie up
+
+html_file = './target/report.html'
+with open(html_file, 'w') as out:
+    out.write('''
+       <html>
+          <table>
+            <tr>
+               <td><img src="{0}"/></td>
+               <td><img src="{1}"/></td>
+            </tr>
+            <tr>
+               <td><img src="{2}"/></td>
+               <td><img src="{3}"/></td>
+            </tr>
+          </table>
+       </html>
+    '''.format(http_mean_img, http_aggregate_img, http_count_img, memory_usage_img))
+
 
