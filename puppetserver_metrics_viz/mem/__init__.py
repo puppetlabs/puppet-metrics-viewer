@@ -1,3 +1,2 @@
-from puppetserver_metrics_viz.mem.metric_map import MemoryMetricMap
 from puppetserver_metrics_viz.mem.metrics_series import MemoryMetricsSeries
 from puppetserver_metrics_viz.mem.graphs import multi_datapoint_line_graph

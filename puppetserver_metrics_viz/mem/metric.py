@@ -1,7 +1,8 @@
 class MemoryMetric:
     BYTES_PER_MEGABYTE = 1024 * 1024
 
-    def __init__(self, json_metric):
+    def __init__(self, timestamp, json_metric):
+        self.timestamp = timestamp
         self.heap = {
             'committed': json_metric['heap-memory']['committed'] / MemoryMetric.BYTES_PER_MEGABYTE,
             'init': json_metric['heap-memory']['init'] / MemoryMetric.BYTES_PER_MEGABYTE,
