@@ -1,13 +1,10 @@
+from puppetserver_metrics_viz.common import Common
 from puppetserver_metrics_viz.mem import MemoryMetricMap
 
 class MemoryMetricsSeries:
     @staticmethod
     def __create_metric_map(json_data):
-        # TODO: DRY this up, it's duplicated from HttpMetricsSeries
-        jvm_metrics = json_data['status-service']['status']['experimental']['jvm-metrics']
-        start_time = jvm_metrics['start-time-ms'] / 1000
-        up_time = jvm_metrics['up-time-ms'] / 1000
-        timestamp = start_time + up_time
+        timestamp = Common.get_timestamp(json_data)
         return MemoryMetricMap(timestamp, json_data['status-service']['status']['experimental']['jvm-metrics'])
 
     @staticmethod

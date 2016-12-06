@@ -1,12 +1,10 @@
+from puppetserver_metrics_viz.common import Common
 from puppetserver_metrics_viz.http import HttpMetricMap
 
 class HttpMetricsSeries:
     @staticmethod
     def __create_metric_map(json_data):
-        jvm_metrics = json_data['status-service']['status']['experimental']['jvm-metrics']
-        start_time = jvm_metrics['start-time-ms'] / 1000
-        up_time = jvm_metrics['up-time-ms'] / 1000
-        timestamp = start_time + up_time
+        timestamp = Common.get_timestamp(json_data)
         return HttpMetricMap(timestamp, json_data['pe-master']['status']['experimental']['http-metrics'])
 
     @staticmethod

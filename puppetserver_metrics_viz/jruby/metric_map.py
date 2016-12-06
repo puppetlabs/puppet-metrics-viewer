@@ -1,11 +1,11 @@
-from puppetserver_metrics_viz.mem.metric import MemoryMetric
+from puppetserver_metrics_viz.jruby.metric import JRubyMetric
 
-# TODO: combine this class with MemoryMetric, this isn't useful
+# TODO: combine this class with JRubyMetric, this isn't useful
 
-class MemoryMetricMap:
+class JRubyMetricMap:
     def __init__(self, timestamp, json_data):
         self.timestamp = timestamp
-        self.jvm_metrics = MemoryMetric(json_data)
+        self.jruby_metrics = JRubyMetric(json_data)
         # # TODO: this map probably isn't actually useful for anything,
         # # originally copied from the HTTP metrics.
         # # this whole class should potentially just be a list/collection
