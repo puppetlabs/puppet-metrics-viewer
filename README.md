@@ -1,5 +1,7 @@
 ## puppetserver-metrics-viz
 
+![screenshot](./metrics_viz.jpg)
+
 This repo contains some CLI tools for generating visualizations of puppetserver
 metrics data.  It assumes that you have collected one or more JSON payloads
 from the PE Puppet Server status endpoint and saved them to disk.
