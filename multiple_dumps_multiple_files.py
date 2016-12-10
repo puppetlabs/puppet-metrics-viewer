@@ -32,6 +32,7 @@ files.sort()
 files = map(lambda f: os.path.join(dir, f), files)
 
 def read_data(f):
+    print "Parsing file: '{0}'".format(f)
     with open(f) as data_file:
         return json.load(data_file)
 
