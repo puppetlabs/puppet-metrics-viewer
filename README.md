@@ -41,7 +41,22 @@ python ./multiple_dumps_multiple_files.py --file-prefix ./target/pe_metrics/pupp
 The results are currently written to the `./target` directory - open up
 `report.html` in your browser.
 
-TODO LIST:
+### Metrics from Older PE Installations
+
+Some older installations of PE (e.g. 2016.1.2) do not log data expected by the visualizer scripts. As a work-around, you can run the included `patch_files.rb` script to create versions of the json files with injected dummy data, so that they can be processed and visualized anyway.
+
+Usage:
+
+    ./patch_files.rb [filename_1 ... filename_n]
+
+Example:
+
+    ./patch_files.rb ~/Downloads/wells_fargo/puppet_server/*.json
+
+The tool will create new files alongside the originals with the prefix "patched."
+
+### TODO LIST
+
 * use different output dirs / filenames based on the input so you don't blow away
   your previous results when you run the tool
 * Add some output indicating where the files were written
