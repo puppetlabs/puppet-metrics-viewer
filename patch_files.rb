@@ -17,30 +17,35 @@ def get_timestamp(str)
 end
 
 while filename = ARGV.shift
-  metrics = JSON.parse(File.read(filename))
-  timestamp = get_timestamp(filename)
-  new_data = {
-    "status-service" => {
-      "status" => {
-        "experimental" => {
-          "jvm-metrics" => {
-            "start-time-ms" => 0,
-            "up-time-ms" => timestamp,
-            "heap-memory" => {
-              "committed" => 0,
-              "max" => 0,
-              "used" => 0,
-              "init" => 0
-            },
-            "non-heap-memory" => {
-              "committed" => 0,
-              "max" => 0,
-              "used" => 0,
-              "init" => 0
-            }}}}}}
-  new_filename = filename.sub(/(#{File.basename(filename)}$)/, 'patched.\1')
-  puts "new filename: #{new_filename}"
-  File.open(new_filename, 'w') do |file|
-    file.write JSON.pretty_generate(new_data.merge(metrics))
+  begin
+    metrics = JSON.parse(File.read(filename))
+    timestamp = get_timestamp(filename)
+    new_data = {
+      "status-service" => {
+        "status" => {
+          "experimental" => {
+            "jvm-metrics" => {
+              "start-time-ms" => 0,
+              "up-time-ms" => timestamp,
+              "heap-memory" => {
+                "committed" => 0,
+                "max" => 0,
+                "used" => 0,
+                "init" => 0
+              },
+              "non-heap-memory" => {
+                "committed" => 0,
+                "max" => 0,
+                "used" => 0,
+                "init" => 0
+              }}}}}}
+    new_filename = filename.sub(/(#{File.basename(filename)}$)/, 'patched.\1')
+    puts "new filename: #{new_filename}"
+    File.open(new_filename, 'w') do |file|
+      file.write JSON.pretty_generate(new_data.merge(metrics))
+    end
+  rescue Exception => e
+    puts "ERROR: #{filename}: #{e.message}"
+    next
   end
 end
