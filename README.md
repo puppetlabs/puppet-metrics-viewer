@@ -41,19 +41,39 @@ python ./multiple_dumps_multiple_files.py --file-prefix ./target/pe_metrics/pupp
 The results are currently written to the `./target` directory - open up
 `report.html` in your browser.
 
-### Metrics from Older PE Installations
+### Metrics from older PE installations
 
-Some older installations of PE (e.g. 2016.1.2) do not log data expected by the visualizer scripts. As a work-around, you can run the included `patch_files.rb` script to create versions of the json files with injected dummy data, so that they can be processed and visualized anyway.
+Some older installations of PE (e.g. 3.8) do not log data expected by the visualizer scripts. As a work-around, you can run the included `patch_files.rb` script to create versions of the json files with injected dummy data, so that they can be processed and visualized anyway.
 
 Usage:
 
     ./patch_files.rb [filename_1 ... filename_n]
 
-Example:
+Examples:
 
     ./patch_files.rb ~/Downloads/wells_fargo/puppet_server/*.json
 
 The tool will create new files alongside the originals with the prefix "patched."
+
+### Export metrics to Graphite
+
+For large datasets collected from customers in the form of JSON files, it may be desirable to export the data to graphite. The `export_to_graphite.rb` script can be used to transform data in the JSON files into a format that can be fed into Graphite.
+
+There is a simple Grafana dashboard JSON file included as well: `grafana-dashboard.json`
+
+Usage:
+
+    ./export_to_graphite.rb [filename_1 ... filename_n]
+
+Output will be lines in Graphite's plain text input format. This output can be fed through a tool like `nc` to inject it into Graphite.
+
+Examples:
+
+    ./export_to_graphite.rb ~/Downloads/wells_fargo/puppet_server/*.json | nc localhost 2003
+
+The simple example can be used for small numbers of files. When more files exist than can be referenced as arguments, use xargs.
+
+    find ~/Downloads/wells_fargo/puppet_server -name '*.json' | xargs ./export_to_graphite.rb | nc localhost 2003
 
 ### TODO LIST
 
