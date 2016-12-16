@@ -40,18 +40,119 @@
   "rows": [
     {
       "title": "New row",
-      "height": "250px",
+      "height": "450px",
       "editable": true,
       "collapse": false,
       "panels": [
         {
-          "title": "Panel Title",
+          "title": "combined major jruby metrics (log scale)",
           "error": false,
           "span": 12,
           "editable": true,
           "type": "graph",
           "isNew": true,
           "id": 2,
+          "targets": [
+            {
+              "target": "pe-jruby-metrics.status.experimental.metrics.average-free-jrubies",
+              "refId": "A",
+              "textEditor": false,
+              "hide": false
+            },
+            {
+              "target": "pe-jruby-metrics.status.experimental.metrics.average-requested-jrubies",
+              "refId": "B"
+            },
+            {
+              "target": "pe-jruby-metrics.status.experimental.metrics.average-wait-time",
+              "refId": "C"
+            },
+            {
+              "target": "pe-jruby-metrics.status.experimental.metrics.average-borrow-time",
+              "refId": "D"
+            }
+          ],
+          "datasource": "${DS_GRAPHITE}",
+          "renderer": "flot",
+          "yaxes": [
+            {
+              "label": null,
+              "show": true,
+              "logBase": 2,
+              "min": null,
+              "max": null,
+              "format": "short"
+            },
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "short"
+            }
+          ],
+          "xaxis": {
+            "show": true
+          },
+          "alert": {
+            "warn": {
+              "op": ">"
+            },
+            "crit": {
+              "op": ">"
+            }
+          },
+          "lines": true,
+          "fill": 1,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "shared": true,
+            "sort": 0,
+            "msResolution": false
+          },
+          "timeFrom": null,
+          "timeShift": null,
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "alerting": {},
+          "thresholds": [],
+          "links": [],
+          "transparent": false
+        }
+      ]
+    },
+    {
+      "title": "New row",
+      "height": "200px",
+      "editable": true,
+      "collapse": false,
+      "panels": [
+        {
+          "title": "average-free-jrubies",
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "graph",
+          "isNew": true,
+          "id": 5,
           "targets": [
             {
               "target": "pe-jruby-metrics.status.experimental.metrics.average-free-jrubies",
@@ -119,18 +220,19 @@
           "aliasColors": {},
           "seriesOverrides": [],
           "alerting": {},
-          "thresholds": []
+          "thresholds": [],
+          "links": []
         }
       ]
     },
     {
       "title": "New row",
-      "height": "250px",
+      "height": "200px",
       "editable": true,
       "collapse": false,
       "panels": [
         {
-          "title": "Panel Title",
+          "title": "average-requested-jrubies",
           "error": false,
           "span": 12,
           "editable": true,
@@ -205,18 +307,19 @@
           "aliasColors": {},
           "seriesOverrides": [],
           "alerting": {},
-          "thresholds": []
+          "thresholds": [],
+          "links": []
         }
       ]
     },
     {
       "title": "New row",
-      "height": "250px",
+      "height": "200px",
       "editable": true,
       "collapse": false,
       "panels": [
         {
-          "title": "Panel Title",
+          "title": "average-wait-time",
           "error": false,
           "span": 12,
           "editable": true,
@@ -290,14 +393,15 @@
           "aliasColors": {},
           "seriesOverrides": [],
           "alerting": {},
-          "thresholds": []
+          "thresholds": [],
+          "links": []
         }
       ]
     },
     {
       "collapse": false,
       "editable": true,
-      "height": "250px",
+      "height": "200px",
       "panels": [
         {
           "alert": {
@@ -348,7 +452,7 @@
           "thresholds": [],
           "timeFrom": "16d",
           "timeShift": null,
-          "title": "Panel Title",
+          "title": "average-borrow-time",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -384,8 +488,8 @@
     }
   ],
   "time": {
-    "from": "2016-12-07T09:48:06.923Z",
-    "to": "2016-12-10T12:51:44.387Z"
+    "from": "2016-12-09T00:51:58.614Z",
+    "to": "2016-12-09T15:07:43.533Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -420,7 +524,7 @@
   },
   "refresh": false,
   "schemaVersion": 13,
-  "version": 5,
+  "version": 11,
   "links": [],
   "gnetId": null
 }
