@@ -5,12 +5,17 @@ require 'time'
 
 def get_timestamp(str)
   # Example filename: nzxppc5047.nndc.kp.org-11_29_16_13:00.json
-  timestr = str.match(/(\d\d)_(\d\d)_(\d\d)_(\d\d:\d\d)/)
+  timestr = str.match(/(\d\d)_(\d\d)_(\d\d)_(\d\d:\d\d)\.json$/)
   yyyy = timestr[3].sub(/.*_(\d\d)$/, '20\1')
   mm = timestr[1]
   dd = timestr[2]
   hhmm = timestr[4]
   Time.parse("#{yyyy}-#{mm}-#{dd} #{hhmm}")
+end
+
+def get_hoststr(str)
+  # Example filename: patched.nzxppc5047.nndc.kp.org-11_29_16_13:00.json
+  str.match(/(patched\.)?([^\/]*)-(\d\d_){3}\d\d:\d\d\.json$/)[2].gsub('.', '-')
 end
 
 def metrics(data, timestamp, parent_key = nil)
@@ -31,9 +36,7 @@ end
 while filename = ARGV.shift
   begin
     data = JSON.parse(File.read(filename))
-    timestamp = get_timestamp(filename)
-    graphite_data = metrics(data, timestamp)
-    puts graphite_data
+    puts metrics(data, get_timestamp(filename), 'servers.' + get_hoststr(filename))
   rescue Exception => e
     STDERR.puts "ERROR: #{filename}: #{e.message}"
     next

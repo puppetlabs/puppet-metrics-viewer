@@ -1,10 +1,49 @@
-## puppetserver-metrics-viz
-
-![screenshot](./metrics_viz.jpg)
+# puppetserver-metrics-viz
 
 This repo contains some CLI tools for generating visualizations of puppetserver
 metrics data.  It assumes that you have collected one or more JSON payloads
 from the PE Puppet Server status endpoint and saved them to disk.
+
+Two tools are provided.
+
+2. Docker/Ruby tooling to run Grafana with the data loaded
+1. Python CLI tools to generate static HTML pages with graphs to view
+
+## Method 1: View metrics in Grafana
+
+![screenshot](./images/grafana.jpg)
+
+For large datasets collected from customers in the form of JSON files, it may be desirable to export the data to graphite. The `json2graphite.rb` script can be used to transform data in the JSON files into a format that can be fed into Graphite.
+
+To run this code, you will need [Docker](https://www.docker.com/products/overview) (and docker-compose) installed.
+
+With Docker installed, you can run the script `view-in-grafana.sh`, passing it the directory containing the data files to load into Graphite. e.g.
+
+    ./view-in-grafana.sh ~/Downloads/pe_metrics/puppet_server
+
+You can then view the metrics by visting `http://localhost:3000` in your browser. Username: `admin`, password: `admin`.
+
+### Export data to pre-existing Graphite
+
+The `json2graphite.rb` script can be used to transform data in the JSON files into a format that can be fed into any Graphite instance.
+
+Usage:
+
+    ./json2graphite.rb [filename_1 ... filename_n]
+
+Output will be lines in Graphite's plain text input format. This output can be fed through a tool like `nc` to inject it into Graphite.
+
+Examples:
+
+    ./json2graphite.rb ~/Downloads/logdump/puppet_server/*.json | nc localhost 2003
+
+The simple example can be used for small numbers of files. When more files exist than can be referenced as arguments, use xargs.
+
+    find ~/Downloads/logdump/puppet_server -name '*.json' | xargs ./json2graphite.rb | nc localhost 2003
+
+## Method 2: Static HTML Pages
+
+![screenshot](./images/metrics_viz.jpg)
 
 The current implementation supports visualizing data produced by Nick Walker's
 puppet module / cron job, where there are periodic HTTP requests made to the
@@ -51,31 +90,12 @@ Usage:
 
 Examples:
 
-    ./patch_files.rb ~/Downloads/wells_fargo/puppet_server/*.json
+    ./patch_files.rb ~/Downloads/logdump/puppet_server/*.json
 
 The tool will create new files alongside the originals with the prefix "patched."
 
-### Export metrics to Graphite
 
-For large datasets collected from customers in the form of JSON files, it may be desirable to export the data to graphite. The `export_to_graphite.rb` script can be used to transform data in the JSON files into a format that can be fed into Graphite.
-
-There is a simple Grafana dashboard JSON file included as well: `grafana-dashboard.json`
-
-Usage:
-
-    ./export_to_graphite.rb [filename_1 ... filename_n]
-
-Output will be lines in Graphite's plain text input format. This output can be fed through a tool like `nc` to inject it into Graphite.
-
-Examples:
-
-    ./export_to_graphite.rb ~/Downloads/wells_fargo/puppet_server/*.json | nc localhost 2003
-
-The simple example can be used for small numbers of files. When more files exist than can be referenced as arguments, use xargs.
-
-    find ~/Downloads/wells_fargo/puppet_server -name '*.json' | xargs ./export_to_graphite.rb | nc localhost 2003
-
-### TODO LIST
+## TODO LIST
 
 * use different output dirs / filenames based on the input so you don't blow away
   your previous results when you run the tool
