@@ -1,0 +1,16 @@
+version: "2"
+services:
+  graphite-statsd:
+    image: hopsoft/graphite-statsd:latest
+    container_name: graphite-statsd
+    ports:
+      - "8080:80"
+      - "2003:2003"
+
+  grafana-puppetserver:
+    image: reidmv/grafana-puppetserver:latest
+    container_name: grafana-puppetserver
+    ports:
+      - "3000:3000"
+    links:
+      - "graphite-statsd"
