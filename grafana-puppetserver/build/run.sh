@@ -1,19 +1,21 @@
 #!/bin/bash
 
+datasource_name="graphite-statsd"
+
 configure() {
   until curl -s http://127.0.0.1:3000 >/dev/null; do sleep 1; done
-
-  for dashboard in /grafana-puppet/dashboard-*.json; do
-    post_dashboard $dashboard
-  done
 
   for datasource in /grafana-puppet/datasource-*.json; do
     post_datasource $datasource
   done
+
+  for dashboard in /grafana-puppet/dashboard-*.json; do
+    post_dashboard $dashboard
+  done
 }
 
 post_dashboard() {
-  dashboard_json=$(cat "$1")
+  dashboard_json=$(cat "$1" | sed "s/\\\${DS_GRAPHITE-STATSD}/$datasource_name/")
   post_json="{\"overwrite\": true, \"dashboard\": $dashboard_json }"
   curl -X POST \
     -H "Accept: application/json" \
