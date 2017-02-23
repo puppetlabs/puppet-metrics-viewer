@@ -29,17 +29,19 @@ The `json2graphite.rb` script can be used to transform data in the JSON files in
 
 Usage:
 
-    ./json2graphite.rb [filename_1 ... filename_n]
+    ./json2graphite.rb [--pattern PATTERN] [filename_1 ... filename_n]
 
 Output will be lines in Graphite's plain text input format. This output can be fed through a tool like `nc` to inject it into Graphite.
 
 Examples:
 
-    ./json2graphite.rb ~/Downloads/logdump/puppet_server/*.json | nc localhost 2003
+    ./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json | nc localhost 2003
 
-The simple example can be used for small numbers of files. When more files exist than can be referenced as arguments, use xargs.
+The simple example can be used for small numbers of files. When more files exist than can be referenced as arguments, use `--pattern`.
 
-    find ~/Downloads/logdump/puppet_server -name '*.json' | xargs ./json2graphite.rb | nc localhost 2003
+    ./json2graphite.rb --pattern '~/Downloads/logdump/puppetserver/*.json' | nc localhost 2003
+
+The `--pattern` flag accepts a Ruby glob argument, which Ruby will then expand into a list of files to process.
 
 ## Method 2: Static HTML Pages
 

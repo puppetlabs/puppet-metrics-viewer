@@ -2,6 +2,16 @@
 
 require 'json'
 require 'time'
+require 'optparse'
+
+def parse_file(filename)
+  begin
+    data = JSON.parse(File.read(filename))
+    puts metrics(data, get_timestamp(filename), 'servers.' + get_hoststr(filename))
+  rescue Exception => e
+    STDERR.puts "ERROR: #{filename}: #{e.message}"
+  end
+end
 
 def get_timestamp(str)
   # Example filename: nzxppc5047.nndc.kp.org-11_29_16_13:00.json
@@ -33,12 +43,17 @@ def metrics(data, timestamp, parent_key = nil)
   end.flatten.compact
 end
 
-while filename = ARGV.shift
-  begin
-    data = JSON.parse(File.read(filename))
-    puts metrics(data, get_timestamp(filename), 'servers.' + get_hoststr(filename))
-  rescue Exception => e
-    STDERR.puts "ERROR: #{filename}: #{e.message}"
-    next
+options = {}
+OptionParser.new do |opt|
+  opt.on('--pattern PATTERN') { |o| options[:pattern] = o }
+end.parse!
+
+if options[:pattern]
+  Dir.glob(options[:pattern]).each do |filename|
+    parse_file(filename)
   end
+end
+
+while filename = ARGV.shift
+  parse_file(filename)
 end

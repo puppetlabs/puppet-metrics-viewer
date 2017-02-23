@@ -34,7 +34,7 @@ done
 echo "ready"
 
 echo -n "Loading data..."
-find "$datadir" -name '*.json' | xargs ../json2graphite.rb | nc localhost 2003
+../json2graphite.rb --pattern "$datadir/"'**/*.json' | nc localhost 2003
 echo " loaded"
 
 echo
