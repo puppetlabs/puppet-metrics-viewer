@@ -28,15 +28,38 @@ def get_hoststr(str)
   str.match(/(patched\.)?([^\/]*)-(\d\d_){3}\d\d:\d\d\.json$/)[2].gsub('.', '-')
 end
 
+def safe_name(value)
+  value.sub(/^[^0-9a-z_]/i, '').gsub(/[^0-9a-z_]/i, '_').gsub(/__/, '_').sub(/_*$/, '')
+end
+
+def array_element_pkey(element)
+  case element
+  when 'function-metrics'; 'function'
+  when 'resource-metrics'; 'resource'
+  when 'http-metrics'; 'route-id'
+  else
+    nil
+  end
+end
+
 def metrics(data, timestamp, parent_key = nil)
   data.collect do |key, value|
-    current_key = [parent_key, key].compact.join('.')
+    current_key = [parent_key, safe_name(key)].compact.join('.')
     case value
     when Hash
       metrics(value, timestamp, current_key)
     when Array
-      # Not implemented; we simply won't include these metrics in the export
-      nil
+      pkey = array_element_pkey(key)
+      if pkey
+        value.map do |elem|
+          pkey_value = elem.delete(pkey)
+          elem.map do |k,v|
+            "#{current_key}.#{safe_name(pkey_value)}.#{safe_name(k)} #{v} #{timestamp.to_i}"
+          end
+        end.join("\n")
+      else
+        nil
+      end
     else
       "#{current_key} #{value} #{timestamp.to_i}"
     end
