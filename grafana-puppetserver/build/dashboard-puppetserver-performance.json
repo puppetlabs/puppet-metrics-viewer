@@ -38,7 +38,7 @@
   "sharedCrosshair": false,
   "hideControls": false,
   "time": {
-    "from": "now-30d",
+    "from": "now-14d",
     "to": "now"
   },
   "timepicker": {
@@ -93,7 +93,7 @@
   },
   "refresh": false,
   "schemaVersion": 13,
-  "version": 13,
+  "version": 1,
   "links": [],
   "gnetId": null,
   "rows": [
@@ -226,7 +226,7 @@
           "datasource": "${DS_GRAPHITE-STATSD}",
           "editable": true,
           "error": false,
-          "fill": 1,
+          "fill": 4,
           "id": 6,
           "legend": {
             "avg": false,
@@ -253,6 +253,10 @@
             {
               "alias": "/up-time-ms/",
               "fill": 0
+            },
+            {
+              "alias": "/committed/",
+              "fill": 1
             }
           ],
           "span": 12,
@@ -266,6 +270,10 @@
             {
               "refId": "B",
               "target": "aliasByNode(servers.$server.status-service.status.experimental.jvm-metrics.up-time-ms, 1, -1)"
+            },
+            {
+              "target": "aliasByNode(servers.$server.status-service.status.experimental.jvm-metrics.heap-memory.committed, 1, -1)",
+              "refId": "C"
             }
           ],
           "thresholds": [],
@@ -287,7 +295,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "decbytes",
               "label": "heap-memory-used",
               "logBase": 1,
               "max": null,
@@ -295,7 +303,7 @@
               "show": true
             },
             {
-              "format": "short",
+              "format": "ms",
               "label": "uptime",
               "logBase": 1,
               "max": null,

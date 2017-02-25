@@ -38,7 +38,7 @@
   "sharedCrosshair": false,
   "hideControls": false,
   "time": {
-    "from": "now-30d",
+    "from": "now-14d",
     "to": "now"
   },
   "timepicker": {
@@ -93,7 +93,7 @@
   },
   "refresh": false,
   "schemaVersion": 13,
-  "version": 10,
+  "version": 1,
   "links": [],
   "gnetId": null,
   "rows": [
