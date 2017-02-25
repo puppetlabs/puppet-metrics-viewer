@@ -1,6 +1,7 @@
 #!/bin/bash
 
 datasource_name="graphite-statsd"
+g_id=1
 
 configure() {
   until curl -s http://127.0.0.1:3000 >/dev/null; do sleep 1; done
@@ -15,22 +16,24 @@ configure() {
 }
 
 post_dashboard() {
-  dashboard_json=$(cat "$1" | sed "s/\\\${DS_GRAPHITE-STATSD}/$datasource_name/")
-  post_json="{\"overwrite\": true, \"dashboard\": $dashboard_json }"
-  curl -X POST \
-    -H "Accept: application/json" \
-    -H "Content-Type: application/json" \
-    -d "$post_json" \
-    http://admin:admin@127.0.0.1:3000/api/dashboards/db
+  dashboard=$(cat "$1" | sed "s/\\\${DS_GRAPHITE-STATSD}/$datasource_name/")
+  json="{\"overwrite\": true, \"dashboard\": $dashboard }"
+  post "/api/dashboards/db" "$json"
+  post "/api/user/stars/dashboard/$g_id"
+  g_id=$(expr "$g_id" + 1)
 }
 
 post_datasource() {
-  datasource_json=$(cat "$1")
+  json=$(cat "$1")
+  post "/api/datasources" "$json"
+}
+
+post() {
   curl -X POST \
     -H "Accept: application/json" \
     -H "Content-Type: application/json" \
-    -d "$datasource_json" \
-    http://admin:admin@127.0.0.1:3000/api/datasources
+    -d "$2" \
+    "http://admin:admin@127.0.0.1:3000${1}"
 }
 
 configure &
