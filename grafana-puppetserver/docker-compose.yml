@@ -6,6 +6,9 @@ services:
     ports:
       - "8080:80"
       - "2003:2003"
+    volumes:
+      - "./conf/carbon.conf:/opt/graphite/conf/carbon.conf:ro"
+      - "./conf/storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf:ro"
 
   grafana-puppetserver:
     image: reidmv/grafana-puppetserver:latest

@@ -34,7 +34,7 @@ done
 echo "ready"
 
 echo -n "Loading data..."
-../json2graphite.rb --pattern "$datadir/"'**/*.json' | nc localhost 2003
+../json2graphite.rb --pattern "$datadir/"'**/*.json' --netcat localhost
 echo " loaded"
 
 echo

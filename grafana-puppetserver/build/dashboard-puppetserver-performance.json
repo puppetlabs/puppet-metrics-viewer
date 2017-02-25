@@ -30,7 +30,7 @@
     }
   ],
   "id": null,
-  "title": "Puppetserver",
+  "title": "Puppetserver Performance",
   "tags": [],
   "style": "dark",
   "timezone": "browser",
@@ -38,7 +38,7 @@
   "sharedCrosshair": false,
   "hideControls": false,
   "time": {
-    "from": "now-7d",
+    "from": "now-30d",
     "to": "now"
   },
   "timepicker": {
@@ -93,7 +93,7 @@
   },
   "refresh": false,
   "schemaVersion": 13,
-  "version": 0,
+  "version": 13,
   "links": [],
   "gnetId": null,
   "rows": [
@@ -120,13 +120,31 @@
           },
           "lines": true,
           "linewidth": 2,
-          "links": [],
+          "links": [
+            {
+              "dashUri": "db/puppetserver-workload",
+              "dashboard": "Puppetserver Workload",
+              "includeVars": true,
+              "keepTime": true,
+              "title": "Puppetserver Workload",
+              "type": "dashboard"
+            }
+          ],
           "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "/.*\\.average-borrow-time/",
+              "yaxis": 2
+            },
+            {
+              "alias": "/.*\\.average-wait-time/",
+              "yaxis": 2
+            }
+          ],
           "span": 12,
           "stack": false,
           "steppedLine": false,
@@ -134,29 +152,29 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "servers.$server.pe-jruby-metrics.status.experimental.metrics.average-free-jrubies",
+              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-free-jrubies, 1, -1)",
               "textEditor": false
             },
             {
               "refId": "B",
-              "target": "servers.$server.pe-jruby-metrics.status.experimental.metrics.average-requested-jrubies",
+              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-requested-jrubies, 1, -1)",
               "textEditor": false
             },
             {
               "refId": "C",
-              "target": "servers.$server.pe-jruby-metrics.status.experimental.metrics.average-wait-time",
+              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-wait-time, 1, -1)",
               "textEditor": false
             },
             {
               "refId": "D",
-              "target": "servers.$server.pe-jruby-metrics.status.experimental.metrics.average-borrow-time",
+              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-borrow-time, 1, -1)",
               "textEditor": false
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "combined major jruby metrics (log scale)",
+          "title": "Puppetserver Performance",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -174,15 +192,15 @@
           "yaxes": [
             {
               "format": "short",
-              "label": null,
-              "logBase": 2,
+              "label": "jrubies - free, requested",
+              "logBase": 1,
               "max": null,
               "min": null,
               "show": true
             },
             {
-              "format": "short",
-              "label": null,
+              "format": "ms",
+              "label": "time - wait, borrow",
               "logBase": 1,
               "max": null,
               "min": null,
@@ -200,17 +218,16 @@
       "collapse": false
     },
     {
-      "title": "New row",
+      "title": "Dashboard Row",
       "panels": [
         {
-          "alerting": {},
           "aliasColors": {},
           "bars": false,
           "datasource": "${DS_GRAPHITE-STATSD}",
           "editable": true,
           "error": false,
           "fill": 1,
-          "id": 5,
+          "id": 6,
           "legend": {
             "avg": false,
             "current": false,
@@ -221,33 +238,45 @@
             "values": false
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [],
+          "seriesOverrides": [
+            {
+              "alias": "/up-time-ms/",
+              "yaxis": 2
+            },
+            {
+              "alias": "/up-time-ms/",
+              "fill": 0
+            }
+          ],
           "span": 12,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "servers.$server.pe-jruby-metrics.status.experimental.metrics.average-free-jrubies",
-              "textEditor": false
+              "target": "aliasByNode(servers.$server.status-service.status.experimental.jvm-metrics.heap-memory.used, 1, -1)"
+            },
+            {
+              "refId": "B",
+              "target": "aliasByNode(servers.$server.status-service.status.experimental.jvm-metrics.up-time-ms, 1, -1)"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "average-free-jrubies",
+          "title": "Heap Memory and Uptime",
           "tooltip": {
             "msResolution": false,
             "shared": true,
             "sort": 0,
-            "value_type": "cumulative"
+            "value_type": "individual"
           },
           "type": "graph",
           "xaxis": {
@@ -259,18 +288,18 @@
           "yaxes": [
             {
               "format": "short",
-              "label": null,
+              "label": "heap-memory-used",
               "logBase": 1,
               "max": null,
-              "min": null,
+              "min": "0",
               "show": true
             },
             {
               "format": "short",
-              "label": null,
+              "label": "uptime",
               "logBase": 1,
               "max": null,
-              "min": null,
+              "min": "0",
               "show": true
             }
           ]
@@ -278,7 +307,7 @@
       ],
       "showTitle": false,
       "titleSize": "h6",
-      "height": "200px",
+      "height": "180",
       "repeat": null,
       "repeatRowId": null,
       "repeatIteration": null,
@@ -314,14 +343,14 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "hide": false,
               "refId": "A",
-              "target": "servers.$server.pe-jruby-metrics.status.experimental.metrics.average-requested-jrubies",
+              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-requested-jrubies, 1)",
               "textEditor": false
             }
           ],
@@ -360,19 +389,166 @@
               "show": true
             }
           ]
+        },
+        {
+          "alerting": {},
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_GRAPHITE-STATSD}",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "hideTimeOverride": false,
+          "id": 1,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-borrow-time, 1)",
+              "textEditor": false
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "average-borrow-time",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
         }
       ],
       "showTitle": false,
       "titleSize": "h6",
-      "height": "200px",
+      "height": "200",
       "repeat": null,
       "repeatRowId": null,
       "repeatIteration": null,
       "collapse": false
     },
     {
-      "title": "New row",
+      "title": "Dashboard Row",
       "panels": [
+        {
+          "alerting": {},
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_GRAPHITE-STATSD}",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 5,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-free-jrubies, 1)",
+              "textEditor": false
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "average-free-jrubies",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
         {
           "alerting": {},
           "aliasColors": {},
@@ -400,13 +576,13 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "servers.$server.pe-jruby-metrics.status.experimental.metrics.average-wait-time",
+              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-wait-time, 1)",
               "textEditor": false
             }
           ],
@@ -449,93 +625,7 @@
       ],
       "showTitle": false,
       "titleSize": "h6",
-      "height": "200px",
-      "repeat": null,
-      "repeatRowId": null,
-      "repeatIteration": null,
-      "collapse": false
-    },
-    {
-      "title": "Row1",
-      "panels": [
-        {
-          "alerting": {},
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_GRAPHITE-STATSD}",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "hideTimeOverride": false,
-          "id": 1,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "servers.$server.pe-jruby-metrics.status.experimental.metrics.average-borrow-time",
-              "textEditor": false
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": "16d",
-          "timeShift": null,
-          "title": "average-borrow-time",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "showTitle": false,
-      "titleSize": "h6",
-      "height": "200px",
+      "height": "200",
       "repeat": null,
       "repeatRowId": null,
       "repeatIteration": null,
