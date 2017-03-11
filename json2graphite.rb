@@ -39,7 +39,11 @@ def parse_file(filename)
   end
   begin
     data = JSON.parse(File.read(filename))
-    array = metrics(data, get_timestamp(filename), 'servers.' + get_hoststr(filename))
+    if data.key?("timestamp")
+      array = metrics(data, Time.parse(data["timestamp"]) )
+    else
+      array = metrics(data, get_timestamp(filename), 'servers.' + get_hoststr(filename))
+    end
     lines = array.map do |item|
       item.split('\n')
     end.flatten
