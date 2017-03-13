@@ -39,7 +39,18 @@ def parse_file(filename)
   end
   begin
     data = JSON.parse(File.read(filename))
-    array = metrics(data, get_timestamp(filename), 'servers.' + get_hoststr(filename))
+
+    # Newer versions of the log tool insert a timestamp field into the JSON.
+    if data['timestamp']
+      timestamp = Time.parse(data.delete('timestamp'))
+      parent_key = nil
+    else
+      timestamp = get_timestamp(filename)
+      # The only data supported in the older log tool comes from puppetserver.
+      parent_key = 'servers.' + get_hoststr(filename) + '.puppetserver'
+    end
+
+    array = metrics(data, timestamp, parent_key)
     lines = array.map do |item|
       item.split('\n')
     end.flatten
