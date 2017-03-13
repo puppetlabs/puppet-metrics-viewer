@@ -132,7 +132,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.$server.pe-master.status.experimental.http-metrics.*.mean, 1, -2)",
+              "target": "aliasByNode(servers.$server.puppetserver.pe-master.status.experimental.http-metrics.*.mean, 1, -2)",
               "textEditor": false
             }
           ],
@@ -216,7 +216,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(smartSummarize(perSecond(keepLastValue(servers.$server.pe-master.status.experimental.http-metrics.*.count, 100)), '5m', 'sum'), 1, -2)",
+              "target": "aliasByNode(smartSummarize(perSecond(keepLastValue(servers.$server.puppetserver.pe-master.status.experimental.http-metrics.*.count, 100)), '5m', 'sum'), 1, -2)",
               "textEditor": false
             },
             {
@@ -307,7 +307,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.$server.pe-puppet-profiler.status.experimental.function-metrics.*.mean, 6)"
+              "target": "aliasByNode(servers.$server.puppetserver.pe-puppet-profiler.status.experimental.function-metrics.*.mean, 7)"
             }
           ],
           "thresholds": [],

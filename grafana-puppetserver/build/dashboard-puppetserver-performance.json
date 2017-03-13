@@ -152,22 +152,22 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-free-jrubies, 1, -1)",
+              "target": "aliasByNode(servers.$server.puppetserver.pe-jruby-metrics.status.experimental.metrics.average-free-jrubies, 1, -1)",
               "textEditor": false
             },
             {
               "refId": "B",
-              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-requested-jrubies, 1, -1)",
+              "target": "aliasByNode(servers.$server.puppetserver.pe-jruby-metrics.status.experimental.metrics.average-requested-jrubies, 1, -1)",
               "textEditor": false
             },
             {
               "refId": "C",
-              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-wait-time, 1, -1)",
+              "target": "aliasByNode(servers.$server.puppetserver.pe-jruby-metrics.status.experimental.metrics.average-wait-time, 1, -1)",
               "textEditor": false
             },
             {
               "refId": "D",
-              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-borrow-time, 1, -1)",
+              "target": "aliasByNode(servers.$server.puppetserver.pe-jruby-metrics.status.experimental.metrics.average-borrow-time, 1, -1)",
               "textEditor": false
             }
           ],
@@ -265,14 +265,14 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.$server.status-service.status.experimental.jvm-metrics.heap-memory.used, 1, -1)"
+              "target": "aliasByNode(servers.$server.puppetserver.status-service.status.experimental.jvm-metrics.heap-memory.used, 1, -1)"
             },
             {
               "refId": "B",
-              "target": "aliasByNode(servers.$server.status-service.status.experimental.jvm-metrics.up-time-ms, 1, -1)"
+              "target": "aliasByNode(servers.$server.puppetserver.status-service.status.experimental.jvm-metrics.up-time-ms, 1, -1)"
             },
             {
-              "target": "aliasByNode(servers.$server.status-service.status.experimental.jvm-metrics.heap-memory.committed, 1, -1)",
+              "target": "aliasByNode(servers.$server.puppetserver.status-service.status.experimental.jvm-metrics.heap-memory.committed, 1, -1)",
               "refId": "C"
             }
           ],
@@ -358,7 +358,7 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-requested-jrubies, 1)",
+              "target": "aliasByNode(servers.$server.puppetserver.pe-jruby-metrics.status.experimental.metrics.average-requested-jrubies, 1)",
               "textEditor": false
             }
           ],
@@ -432,7 +432,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-borrow-time, 1)",
+              "target": "aliasByNode(servers.$server.puppetserver.pe-jruby-metrics.status.experimental.metrics.average-borrow-time, 1)",
               "textEditor": false
             }
           ],
@@ -517,7 +517,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-free-jrubies, 1)",
+              "target": "aliasByNode(servers.$server.puppetserver.pe-jruby-metrics.status.experimental.metrics.average-free-jrubies, 1)",
               "textEditor": false
             }
           ],
@@ -590,7 +590,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.$server.pe-jruby-metrics.status.experimental.metrics.average-wait-time, 1)",
+              "target": "aliasByNode(servers.$server.puppetserver.pe-jruby-metrics.status.experimental.metrics.average-wait-time, 1)",
               "textEditor": false
             }
           ],

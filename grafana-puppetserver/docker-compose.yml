@@ -11,7 +11,7 @@ services:
       - "./conf/storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf:ro"
 
   grafana-puppetserver:
-    image: reidmv/grafana-puppetserver:1.2.2
+    image: reidmv/grafana-puppetserver:1.3.0
     container_name: grafana-puppetserver
     ports:
       - "3000:3000"
