@@ -108,7 +108,11 @@ def array_cipher
 end
 
 def error_name(str)
-  str[/'[^']+'([^']+)'/,1]
+  if str["mbean"]
+    str[/'[^']+'([^']+)'/,1]
+  else
+    str
+  end
 end
 
 def metrics(data, timestamp, parent_key = nil)
