@@ -354,6 +354,90 @@
       "repeatRowId": null,
       "repeatIteration": null,
       "collapse": false
+    },
+    {
+      "title": "Dashboard Row",
+      "panels": [
+        {
+          "id": 7,
+          "title": "Metric Collection Errors",
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "graph",
+          "targets": [
+            {
+              "refId": "A",
+              "target": "servers.$server.puppetserver.error_count"
+            }
+          ],
+          "datasource": "${DS_GRAPHITE-STATSD}",
+          "renderer": "flot",
+          "yaxes": [
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "short"
+            },
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "short"
+            }
+          ],
+          "xaxis": {
+            "show": true,
+            "mode": "time",
+            "name": null,
+            "values": []
+          },
+          "lines": true,
+          "fill": 1,
+          "linewidth": 1,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false,
+            "hideEmpty": false
+          },
+          "nullPointMode": "connected",
+          "steppedLine": false,
+          "tooltip": {
+            "value_type": "individual",
+            "shared": true,
+            "sort": 0,
+            "msResolution": false
+          },
+          "timeFrom": null,
+          "timeShift": null,
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "thresholds": [],
+          "links": []
+        }
+      ],
+      "showTitle": false,
+      "titleSize": "h6",
+      "height": 250,
+      "repeat": null,
+      "repeatRowId": null,
+      "repeatIteration": null,
+      "collapse": false
     }
   ]
 }
