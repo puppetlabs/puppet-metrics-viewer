@@ -30,7 +30,7 @@
     }
   ],
   "id": null,
-  "title": "Puppetserver Workload",
+  "title": "Metric Collection Errors",
   "tags": [],
   "style": "dark",
   "timezone": "browser",
@@ -91,6 +91,7 @@
   "annotations": {
     "list": []
   },
+  "description": "Errors in collecting metrics for Puppetserver and PuppetDB",
   "refresh": false,
   "schemaVersion": 13,
   "version": 1,
@@ -98,91 +99,8 @@
   "gnetId": null,
   "rows": [
     {
-      "title": "Dashboard Row",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_GRAPHITE-STATSD}",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "id": 2,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "aliasByNode(servers.$server.puppetserver.pe-master.status.experimental.http-metrics.*.mean, 1, -2)",
-              "textEditor": false
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Average request time by type",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "ms",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ]
-        }
-      ],
-      "showTitle": false,
-      "titleSize": "h6",
-      "height": "250",
-      "repeat": null,
-      "repeatRowId": null,
-      "repeatIteration": null,
-      "collapse": false
-    },
-    {
-      "title": "Dashboard Row",
+      "collapse": false,
+      "height": 250,
       "panels": [
         {
           "aliasColors": {},
@@ -195,6 +113,7 @@
           "legend": {
             "avg": false,
             "current": false,
+            "hideEmpty": false,
             "max": false,
             "min": false,
             "show": true,
@@ -210,110 +129,19 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(smartSummarize(perSecond(keepLastValue(servers.$server.puppetserver.pe-master.status.experimental.http-metrics.*.count, 100)), '5m', 'sum'), 1, -2)",
-              "textEditor": false
-            },
-            {
-              "refId": "B",
-              "target": "",
-              "textEditor": false
+              "target": "servers.$server.puppetserver.error_count"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Approx. request rate by type",
-          "tooltip": {
-            "msResolution": false,
-            "shared": false,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": [
-              "total"
-            ]
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": "Requests per second",
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": false
-            }
-          ]
-        }
-      ],
-      "showTitle": false,
-      "titleSize": "h6",
-      "height": 250,
-      "repeat": null,
-      "repeatRowId": null,
-      "repeatIteration": null,
-      "collapse": false
-    },
-    {
-      "title": "Dashboard Row",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_GRAPHITE-STATSD}",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "id": 3,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "aliasByNode(servers.$server.puppetserver.pe-puppet-profiler.status.experimental.function-metrics.*.mean, 7)"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Function Performance",
+          "title": "Puppetserver Metric Collection Errors",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -329,7 +157,82 @@
           },
           "yaxes": [
             {
-              "format": "ms",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "datasource": "${DS_GRAPHITE-STATSD}",
+          "fill": 1,
+          "id": 2,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sort": "total",
+            "sortDesc": false,
+            "total": true,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "maxDataPoints": "",
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "servers.$server.puppetserver.error.*"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Puppetserver Metric Collection Error Types",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -347,13 +250,171 @@
           ]
         }
       ],
-      "showTitle": false,
-      "titleSize": "h6",
-      "height": "350",
       "repeat": null,
-      "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": false
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 250,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "${DS_GRAPHITE-STATSD}",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "id": 3,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "hideEmpty": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "servers.$server.puppetdb.error_count"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "PuppetDB Metric Collection Errors",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "datasource": "${DS_GRAPHITE-STATSD}",
+          "fill": 1,
+          "id": 4,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sort": "total",
+            "sortDesc": false,
+            "total": true,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "maxDataPoints": "",
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "servers.$server.puppetdb.error.*"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "PuppetDB Metric Collection Error Types",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
     }
   ]
 }
