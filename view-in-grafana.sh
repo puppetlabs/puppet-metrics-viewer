@@ -13,7 +13,7 @@ usage()
 }
 
 finish() {
-  docker-compose down
+  docker-compose down --volumes
 }
 
 # VALIDATION
