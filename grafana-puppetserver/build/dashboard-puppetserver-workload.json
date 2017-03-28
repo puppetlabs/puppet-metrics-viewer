@@ -11,16 +11,16 @@
   ],
   "__requires": [
     {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "4.2.0"
+    },
+    {
       "type": "panel",
       "id": "graph",
       "name": "Graph",
       "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "4.0.1"
     },
     {
       "type": "datasource",
@@ -29,76 +29,20 @@
       "version": "1.0.0"
     }
   ],
-  "id": null,
-  "title": "Puppetserver Workload",
-  "tags": [],
-  "style": "dark",
-  "timezone": "browser",
-  "editable": true,
-  "sharedCrosshair": false,
-  "hideControls": false,
-  "time": {
-    "from": "now-14d",
-    "to": "now"
-  },
-  "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
-  },
-  "templating": {
-    "list": [
-      {
-        "allValue": null,
-        "current": {},
-        "datasource": "${DS_GRAPHITE-STATSD}",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Server",
-        "multi": false,
-        "name": "server",
-        "options": [],
-        "query": "servers.*",
-        "refresh": 1,
-        "regex": "",
-        "sort": 0,
-        "tagValuesQuery": null,
-        "tagsQuery": null,
-        "type": "query"
-      }
-    ]
-  },
   "annotations": {
     "list": []
   },
-  "refresh": false,
-  "schemaVersion": 13,
-  "version": 1,
-  "links": [],
+  "editable": true,
   "gnetId": null,
+  "graphTooltip": 0,
+  "hideControls": false,
+  "id": null,
+  "links": [],
+  "refresh": false,
   "rows": [
     {
-      "title": "Dashboard Row",
+      "collapse": false,
+      "height": "250",
       "panels": [
         {
           "aliasColors": {},
@@ -119,7 +63,24 @@
           },
           "lines": true,
           "linewidth": 1,
-          "links": [],
+          "links": [
+            {
+              "dashUri": "db/puppetserver-performance",
+              "dashboard": "Puppetserver Performance",
+              "includeVars": true,
+              "keepTime": true,
+              "title": "Puppetserver Performance",
+              "type": "dashboard"
+            },
+            {
+              "dashUri": "db/metric-collection-errors",
+              "dashboard": "Metric Collection Errors",
+              "includeVars": true,
+              "keepTime": true,
+              "title": "Metric Collection Errors",
+              "type": "dashboard"
+            }
+          ],
           "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
@@ -173,16 +134,16 @@
           ]
         }
       ],
-      "showTitle": false,
-      "titleSize": "h6",
-      "height": "250",
       "repeat": null,
-      "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": false
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
     },
     {
-      "title": "Dashboard Row",
+      "collapse": false,
+      "height": 250,
       "panels": [
         {
           "aliasColors": {},
@@ -264,16 +225,16 @@
           ]
         }
       ],
-      "showTitle": false,
-      "titleSize": "h6",
-      "height": 250,
       "repeat": null,
-      "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": false
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
     },
     {
-      "title": "Dashboard Row",
+      "collapse": false,
+      "height": "350",
       "panels": [
         {
           "aliasColors": {},
@@ -347,13 +308,71 @@
           ]
         }
       ],
-      "showTitle": false,
-      "titleSize": "h6",
-      "height": "350",
       "repeat": null,
-      "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": false
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
     }
-  ]
+  ],
+  "schemaVersion": 14,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_GRAPHITE-STATSD}",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Server",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "servers.*",
+        "refresh": 1,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": null,
+        "tags": [],
+        "tagsQuery": null,
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-14d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Puppetserver Workload",
+  "version": 3
 }

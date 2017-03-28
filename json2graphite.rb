@@ -107,6 +107,14 @@ def array_cipher
   }
 end
 
+def error_name(str)
+  if str["mbean"]
+    str[/'[^']+'([^']+)'/,1]
+  else
+    str
+  end
+end
+
 def metrics(data, timestamp, parent_key = nil)
   data.collect do |key, value|
     current_key = [parent_key, safe_name(key)].compact.join('.')
@@ -127,6 +135,11 @@ def metrics(data, timestamp, parent_key = nil)
             end
           end.compact
         end.flatten.compact.join("\n")
+      elsif key == 'error'
+        value.map do |elem|
+          ekey = error_name(elem)
+          "#{current_key}.#{safe_name(ekey)} 1 #{timestamp.to_i}"
+        end.compact
       else
         nil
       end
