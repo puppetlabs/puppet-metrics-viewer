@@ -34,6 +34,7 @@ done
 echo "ready"
 
 echo -n "Loading data..."
+find $datadir -type f -iname "*.bz2" -exec bash -c 'tar jxf "{}" -C $(dirname "{}")' \; 2>/dev/null;
 ../json2graphite.rb --pattern "$datadir/"'**/*.json' --netcat localhost
 echo " loaded"
 
