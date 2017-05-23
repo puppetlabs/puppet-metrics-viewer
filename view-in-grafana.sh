@@ -25,6 +25,8 @@ which docker-compose || { echo "ERROR: docker-compose required. Please install d
 
 trap finish EXIT INT 
 
+echo "Getting the latest images"
+docker-compose pull --ignore-pull-failures >/dev/null 2>&1
 docker-compose up -d
 
 echo -n "Waiting for graphite to be ready..."
