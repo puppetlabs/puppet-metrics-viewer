@@ -176,7 +176,7 @@
             }
           ],
           "maxDataPoints": "",
-          "nullPointMode": "null",
+          "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -335,7 +335,7 @@
           "linewidth": 1,
           "links": [],
           "maxDataPoints": "",
-          "nullPointMode": "null",
+          "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
           "points": false,
@@ -452,5 +452,5 @@
   },
   "timezone": "browser",
   "title": "Metric Collection Errors",
-  "version": 5
+  "version": 0
 }
