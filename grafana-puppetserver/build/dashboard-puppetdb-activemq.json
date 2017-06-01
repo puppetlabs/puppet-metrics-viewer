@@ -37,7 +37,15 @@
   "graphTooltip": 0,
   "hideControls": false,
   "id": null,
-  "links": [],
+  "links": [
+    {
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [],
+      "type": "dashboards"
+    }
+  ],
   "refresh": false,
   "rows": [
     {
@@ -87,15 +95,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(servers.*.puppetdb.amq_metrics.DequeueCount, 'Dequeue')"
+              "target": "alias(servers.$server.puppetdb.select metric, 'Dequeue')"
             },
             {
               "refId": "B",
-              "target": "alias(servers.*.puppetdb.amq_metrics.EnqueueCount, 'Enqueue')"
+              "target": "alias(servers.$server.puppetdb.select metric, 'Enqueue')"
             },
             {
               "refId": "C",
-              "target": "alias(servers.*.puppetdb.amq_metrics.DispatchCount, 'Dispatch')"
+              "target": "alias(servers.$server.puppetdb.select metric, 'Dispatch')"
             }
           ],
           "thresholds": [],
@@ -175,11 +183,11 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(servers.*.puppetdb.amq_metrics.MaxMessageSize, 'Max message size')"
+              "target": "alias(servers.$server.puppetdb.select metric, 'Max message size')"
             },
             {
               "refId": "B",
-              "target": "alias(servers.*.puppetdb.amq_metrics.AverageMessageSize, 'Ave message size')"
+              "target": "alias(servers.$server.puppetdb.select metric, 'Ave message size')"
             }
           ],
           "thresholds": [],
@@ -259,7 +267,8 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(servers.*.puppetdb.amq_metrics.AverageEnqueueTime, 'ave. enqueue time')"
+              "target": "alias(servers.$server.puppetdb.select metric, 'ave. enqueue time')",
+              "textEditor": true
             }
           ],
           "thresholds": [],
@@ -339,11 +348,13 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(servers.*.puppetdb.amq_metrics.MemoryUsageByteCount, 'Mem usage byte count')"
+              "target": "alias(servers.$server.puppetdb.select metric, 'Mem usage byte count')",
+              "textEditor": true
             },
             {
               "refId": "B",
-              "target": "alias(servers.*.puppetdb.amq_metrics.mem.select metric, 'Mem usage byte count')"
+              "target": "alias(servers.$server.puppetdb.amq_metrics.mem.select metric, 'Mem usage byte count')",
+              "textEditor": true
             }
           ],
           "thresholds": [],
@@ -423,11 +434,11 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(servers.*.puppetdb.amq_metrics.QueueSize, 'Queue size')"
+              "target": "alias(servers.$server.puppetdb.select metric, 'Queue size')"
             },
             {
               "refId": "B",
-              "target": "alias(servers.*.puppetdb.amq_metrics.QueueSize, 'Queue size')"
+              "target": "alias(servers.$server.puppetdb.select metric, 'Queue size')"
             }
           ],
           "thresholds": [],
@@ -478,11 +489,32 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_GRAPHITE-STATSD}",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Server",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "servers.*",
+        "refresh": 1,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
-    "from": "2017-05-02T01:45:32.185Z",
-    "to": "2017-05-02T20:58:26.684Z"
+    "from": "now-30d",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -511,5 +543,5 @@
   },
   "timezone": "browser",
   "title": "PuppetDB Activemq",
-  "version": 0
+  "version": 6
 }

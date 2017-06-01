@@ -37,7 +37,15 @@
   "graphTooltip": 0,
   "hideControls": false,
   "id": null,
-  "links": [],
+  "links": [
+    {
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [],
+      "type": "dashboards"
+    }
+  ],
   "refresh": false,
   "rows": [
     {
@@ -619,7 +627,7 @@
     ]
   },
   "time": {
-    "from": "now-14d",
+    "from": "now-30d",
     "to": "now"
   },
   "timepicker": {
@@ -649,5 +657,5 @@
   },
   "timezone": "browser",
   "title": "Puppetserver Performance",
-  "version": 2
+  "version": 5
 }
