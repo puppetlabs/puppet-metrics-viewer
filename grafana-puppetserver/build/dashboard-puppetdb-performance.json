@@ -346,7 +346,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.storage_replace-catalog-time.FiveMinuteRate, 1, 3)"
+              "target": "aliasByNode(servers.*.puppetdb.storage_replace-catalog-time.95thPercentile, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -367,7 +367,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ms",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -414,7 +414,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.storage_replace-facts-time.FiveMinuteRate, 1, 3)"
+              "target": "aliasByNode(servers.*.puppetdb.storage_replace-facts-time.95thPercentile, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -435,7 +435,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ms",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -482,7 +482,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.storage_store-report-time.FiveMinuteRate, 1, 3)"
+              "target": "aliasByNode(servers.*.puppetdb.storage_store-report-time.95thPercentile, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -503,7 +503,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ms",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -536,8 +536,8 @@
     "list": []
   },
   "time": {
-    "from": "2017-04-05T18:52:05.866Z",
-    "to": "2017-04-19T18:52:05.866Z"
+    "from": "now-30d",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
