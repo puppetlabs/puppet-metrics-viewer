@@ -3,12 +3,19 @@
 # Save the absolute path version of the given argument for later use
 [ "${1:0:1}" = "/" ] && datadir="$1" || datadir=$(pwd)/"$1"
 
+if [ "$2" != "" ]; then
+  RETENTION_DAYS=$2
+else
+  RETENTION_DAYS=30
+fi
+
+
 cd "$(dirname "$0")/grafana-puppetserver"
 
 usage()
 {
   echo
-  echo "USAGE: view-in-grafana.sh <directory>"
+  echo "USAGE: view-in-grafana.sh <directory> <retention_days>"
   echo
 }
 
@@ -23,7 +30,7 @@ which docker-compose || { echo "ERROR: docker-compose required. Please install d
 
 # MAIN SCRIPT
 
-trap finish EXIT INT 
+trap finish EXIT INT
 
 echo "Getting the latest images"
 docker-compose pull --ignore-pull-failures >/dev/null 2>&1
@@ -36,7 +43,7 @@ done
 echo "ready"
 
 echo -n "Loading data..."
-find $datadir -type f -iname "*.bz2" -exec bash -c 'tar jxf "{}" -C $(dirname "{}")' \; 2>/dev/null;
+find $datadir -type f -ctime -$RETENTION_DAYS -iname "*.bz2" -exec bash -c 'tar jxf "{}" -C $(dirname "{}")' \; 2>/dev/null;
 ../json2graphite.rb --pattern "$datadir/"'**/*.json' --netcat localhost
 echo " loaded"
 
