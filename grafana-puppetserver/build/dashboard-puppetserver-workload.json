@@ -37,8 +37,15 @@
   "graphTooltip": 0,
   "hideControls": false,
   "id": null,
-  "links": [],
-  "refresh": false,
+  "links": [
+    {
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [],
+      "type": "dashboards"
+    }
+  ],
   "rows": [
     {
       "collapse": false,
@@ -344,7 +351,7 @@
     ]
   },
   "time": {
-    "from": "now-14d",
+    "from": "now-30d",
     "to": "now"
   },
   "timepicker": {
@@ -374,5 +381,5 @@
   },
   "timezone": "browser",
   "title": "Puppetserver Workload",
-  "version": 3
+  "version": 4
 }

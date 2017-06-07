@@ -98,7 +98,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.global_message-persistence-time.FiveMinuteRate, 1, 3)"
+              "target": "aliasByNode(servers.$server.puppetdb.global_message-persistence-time.FiveMinuteRate, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -178,7 +178,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.PDBReadPool_pool_Usage.50thPercentile, 1, 3)"
+              "target": "aliasByNode(servers.$server.puppetdb.PDBReadPool_pool_Usage.50thPercentile, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -246,7 +246,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.PDBReadPool_pool_Wait.FifteenMinuteRate, 1, 3)"
+              "target": "aliasByNode(servers.$server.puppetdb.PDBReadPool_pool_Wait.FifteenMinuteRate, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -314,7 +314,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.PDBReadPool_pool_PendingConnections.Value, 1, 3)"
+              "target": "aliasByNode(servers.$server.puppetdb.PDBReadPool_pool_PendingConnections.Value, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -394,7 +394,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.PDBWritePool_pool_Usage.50thPercentile, 1, 3)"
+              "target": "aliasByNode(servers.$server.puppetdb.PDBWritePool_pool_Usage.50thPercentile, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -462,7 +462,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.PDBWritePool_pool_Wait.FifteenMinuteRate, 1, 3)"
+              "target": "aliasByNode(servers.$server.puppetdb.PDBWritePool_pool_Wait.FifteenMinuteRate, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -530,7 +530,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.PDBWritePool_pool_PendingConnections.Value, 1, 3)"
+              "target": "aliasByNode(servers.$server.puppetdb.PDBWritePool_pool_PendingConnections.Value, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -610,7 +610,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.global_discarded.FiveMinuteRate, 1, 3)"
+              "target": "aliasByNode(servers.$server.puppetdb.global_discarded.FiveMinuteRate, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -678,7 +678,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(servers.*.puppetdb.global_fatal.FiveMinuteRate, 1, 3)"
+              "target": "aliasByNode(servers.$server.puppetdb.global_fatal.FiveMinuteRate, 1, 3)"
             }
           ],
           "thresholds": [],
@@ -729,10 +729,31 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_GRAPHITE-STATSD}",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Server",
+        "multi": false,
+        "name": "server",
+        "options": [],
+        "query": "servers.*",
+        "refresh": 1,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-30d",
     "to": "now"
   },
   "timepicker": {
@@ -762,5 +783,5 @@
   },
   "timezone": "browser",
   "title": "PuppetDB Workload",
-  "version": 1
+  "version": 6
 }
