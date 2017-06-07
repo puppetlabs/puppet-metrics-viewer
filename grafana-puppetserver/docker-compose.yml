@@ -4,7 +4,6 @@ services:
     image: hopsoft/graphite-statsd:latest
     container_name: graphite-statsd
     ports:
-      - "8080:80"
       - "2003:2003"
     volumes:
       - "./conf/carbon.conf:/opt/graphite/conf/carbon.conf:ro"
