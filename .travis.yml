@@ -5,6 +5,8 @@ env:
   global:
     - COMMIT=${TRAVIS_COMMIT::8}
     - REPO=reidmv/grafana-puppetserver
+    - DOCKER_USERNAME=reidmv
+    - secure: "NypkuJrbWD/AhZa+YMJQNgjYXvhcdxZTo+6iQAo+M1klbMxftTE5HnKcRjERoQT+aFg9BRXaC1aMcKMswdojfgGo+v9hAAYfpFyh78fX9+Iuomspwawxx0+co1/xygkGaNbR/DTFbmCzCd/gRb+BB/1+JJhELlBZlzwYa7xQWqSeiBspL4D6PcvEciTKTqpgl+grrtZIf5xc1ylFn/QBO9wmSWejSD9Oyn2l5bgZ8bFm0BaBvUreiG9DNa21TyslzvpgUS86moN9cFlyHNIngm0HY6WUC41IpUDuY1cr5MKj/We7XlkXRZX9AaJnVgu30h3O8A0PEtGaqAIRxhb6e6u0H/odsDZlJ2JhPXKC7c7yNorobaHD0ocT1/EH+cdpuugDVZhx0OKzXN7JcnIwzTtGo6d+fX6BVqnPEIDn3GhBy7lHheWJ9UrhVEqRFXQ791IrmEP+WC7e/V0S+PihT791iRyxSpx48hcCYxYtb6MtZ+fUpzxz7S5ZyOTdHxHNG9Bb8r30o0mKK2xd3c5+uucBzymGGAqA/FSGUcOkhJG49BwRmnvoxCifW0SupoBhO1EEaSDZ/nY5qnzI7EBgXHpTj0kFglWwNgH7UQzDKpBEsaLj4e/fO+8PKSUlqdaGOKFBzgTJGr0F2xJabE/V4kSQxfd5cHtjFQCDla+Ppxg=" # DOCKER_PASSWORD
 
 services:
   - docker
