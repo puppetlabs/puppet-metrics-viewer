@@ -1,0 +1,27 @@
+sudo: required
+language: ruby
+
+env:
+  global:
+    - COMMIT=${TRAVIS_COMMIT::8}
+    - REPO=reidmv/grafana-puppetserver
+
+services:
+  - docker
+
+before_install:
+  - docker build -t $REPO:latest grafana-puppetserver
+  - docker tag $REPO:latest $REPO:$(docker inspect --format "{{ index .Config.Labels \"org.label-schema.version\"}}" $REPO)
+  - docker pull hopsoft/graphite-statsd:latest
+
+script:
+  - cd grafana-puppetserver 
+  - docker-compose up -d
+  - ruby -rsocket -e 's=TCPSocket.new("localhost",3000)'
+  - docker-compose down
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+      docker push $REPO;
+    fi
