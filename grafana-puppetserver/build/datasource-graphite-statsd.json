@@ -3,5 +3,6 @@
   "type":"graphite",
   "url":"http://graphite-statsd:80",
   "access":"proxy",
-  "basicAuth":false
+  "basicAuth":false,
+  "isDefault":true
 }
