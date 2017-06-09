@@ -46,3 +46,25 @@ The simple example can be used for small numbers of files. When more files exist
 ```
 
 The `--pattern` flag accepts a Ruby glob argument, which Ruby will then expand into a list of files to process.
+
+## Standup Grafana without importing data
+
+This branch contains a script `build-grafana.sh` to standup a Grafana instance
+without importing any data. It uses a locally-built docker container, rather
+than an image from docker hub.
+
+To make modifications, alter the files in `grafana-puppetserver/` and then in
+that directory run `docker-compose up --build --force-recreate`. `Ctrl-C` to
+exit, and then run `docker-compose down --volumes` to stop completely (only
+needed if you want to completely restart the containers).
+
+On Mac, there appears to be a problem where if you put your computer to sleep
+with containers running, they will wake up with time out of sync from your
+laptop. This can be fixed by restarting Docker (can be done from the menu
+bar).
+
+You can check the container's time easily by running
+
+```
+docker exec -it graphite-statsd date
+```
