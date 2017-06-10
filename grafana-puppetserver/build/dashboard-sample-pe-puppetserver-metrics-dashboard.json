@@ -54,16 +54,16 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(puppetlabs.localhost.jruby.num-jrubies,'num jrubies')"
+              "target": "alias(puppetlabs.master.example.com.jruby.num-jrubies,'num jrubies')"
             },
             {
-              "target": "alias(puppetlabs.localhost.jruby.num-free-jrubies,'num free jrubies')"
+              "target": "alias(puppetlabs.master.example.com.jruby.num-free-jrubies,'num free jrubies')"
             },
             {
-              "target": "alias(puppetlabs.localhost.jruby.free-jrubies-histo.mean,'average free jrubies')"
+              "target": "alias(puppetlabs.master.example.com.jruby.free-jrubies-histo.mean,'average free jrubies')"
             },
             {
-              "target": "alias(puppetlabs.localhost.jruby.requested-jrubies-histo.mean,'average requested jrubies')"
+              "target": "alias(puppetlabs.master.example.com.jruby.requested-jrubies-histo.mean,'average requested jrubies')"
             }
           ],
           "thresholds": [],
@@ -134,16 +134,16 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(puppetlabs.localhost.jruby.borrow-timer.mean,'borrow time')"
+              "target": "alias(puppetlabs.master.example.com.jruby.borrow-timer.mean,'borrow time')"
             },
             {
-              "target": "alias(puppetlabs.localhost.jruby.wait-timer.mean,'wait time')"
+              "target": "alias(puppetlabs.master.example.com.jruby.wait-timer.mean,'wait time')"
             },
             {
-              "target": "alias(puppetlabs.localhost.jruby.lock-held-timer.mean,'lock held time')"
+              "target": "alias(puppetlabs.master.example.com.jruby.lock-held-timer.mean,'lock held time')"
             },
             {
-              "target": "alias(puppetlabs.localhost.jruby.lock-wait-timer.mean,'lock wait time')"
+              "target": "alias(puppetlabs.master.example.com.jruby.lock-wait-timer.mean,'lock wait time')"
             }
           ],
           "thresholds": [],
@@ -219,13 +219,13 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(puppetlabs.localhost.memory.heap.used,'heap used')"
+              "target": "alias(puppetlabs.master.example.com.memory.heap.used,'heap used')"
             },
             {
-              "target": "alias(puppetlabs.localhost.memory.non-heap.used,'non-heap used')"
+              "target": "alias(puppetlabs.master.example.com.memory.non-heap.used,'non-heap used')"
             },
             {
-              "target": "alias(puppetlabs.localhost.num-cpus, 'num cpus')"
+              "target": "alias(puppetlabs.master.example.com.num-cpus, 'num cpus')"
             }
           ],
           "thresholds": [],
@@ -310,28 +310,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(puppetlabs.localhost.http.puppet-v3-catalog-.*.-requests.mean,'catalog')"
+              "target": "alias(puppetlabs.master.example.com.http.puppet-v3-catalog-.*.-requests.mean,'catalog')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http.puppet-v3-report-.*.-requests.mean,'report')"
+              "target": "alias(puppetlabs.master.example.com.http.puppet-v3-report-.*.-requests.mean,'report')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http.puppet-v3-node-.*.-requests.mean,'node')"
+              "target": "alias(puppetlabs.master.example.com.http.puppet-v3-node-.*.-requests.mean,'node')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http.puppet-v3-file_metadatas-.*.-requests.mean,'file_metadatas')"
+              "target": "alias(puppetlabs.master.example.com.http.puppet-v3-file_metadatas-.*.-requests.mean,'file_metadatas')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http.puppet-v3-file_metadata-.*.-requests.mean,'file_metadata')"
+              "target": "alias(puppetlabs.master.example.com.http.puppet-v3-file_metadata-.*.-requests.mean,'file_metadata')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http.puppet-v3-file_content-.*.-requests.mean,'file_content')"
+              "target": "alias(puppetlabs.master.example.com.http.puppet-v3-file_content-.*.-requests.mean,'file_content')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http.other-requests.mean,'other')"
+              "target": "alias(puppetlabs.master.example.com.http.other-requests.mean,'other')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http.total-requests.mean,'all')"
+              "target": "alias(puppetlabs.master.example.com.http.total-requests.mean,'all')"
             }
           ],
           "thresholds": [],
@@ -404,22 +404,22 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(puppetlabs.localhost.compiler.compile.mean,'compile')"
+              "target": "alias(puppetlabs.master.example.com.compiler.compile.mean,'compile')"
             },
             {
-              "target": "alias(puppetlabs.localhost.functions.mean,'function calls')"
+              "target": "alias(puppetlabs.master.example.com.functions.mean,'function calls')"
             },
             {
-              "target": "alias(puppetlabs.localhost.compiler.find_node.mean,'find_node')"
+              "target": "alias(puppetlabs.master.example.com.compiler.find_node.mean,'find_node')"
             },
             {
-              "target": "alias(puppetlabs.localhost.compiler.static_compile.mean,'static compile')"
+              "target": "alias(puppetlabs.master.example.com.compiler.static_compile.mean,'static compile')"
             },
             {
-              "target": "alias(puppetlabs.localhost.compiler.static_compile_postprocessing.mean,'static compile postprocessing')"
+              "target": "alias(puppetlabs.master.example.com.compiler.static_compile_postprocessing.mean,'static compile postprocessing')"
             },
             {
-              "target": "alias(puppetlabs.localhost.compiler.find_facts.mean,'find_facts')"
+              "target": "alias(puppetlabs.master.example.com.compiler.find_facts.mean,'find_facts')"
             }
           ],
           "thresholds": [],
@@ -490,28 +490,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(puppetlabs.localhost.http-client.experimental.with-metric-id.puppetdb.command.replace_facts.full-response.mean, 'PuppetDB: replace facts')"
+              "target": "alias(puppetlabs.master.example.com.http-client.experimental.with-metric-id.puppetdb.command.replace_facts.full-response.mean, 'PuppetDB: replace facts')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http-client.experimental.with-metric-id.puppetdb.command.replace_catalog.full-response.mean, 'PuppetDB: replace catalog')"
+              "target": "alias(puppetlabs.master.example.com.http-client.experimental.with-metric-id.puppetdb.command.replace_catalog.full-response.mean, 'PuppetDB: replace catalog')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http-client.experimental.with-metric-id.puppetdb.command.store_report.full-response.mean, 'PuppetDB: store report')"
+              "target": "alias(puppetlabs.master.example.com.http-client.experimental.with-metric-id.puppetdb.command.store_report.full-response.mean, 'PuppetDB: store report')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http-client.experimental.with-metric-id.puppetdb.facts.find.full-response.mean, 'PuppetDB: find facts')"
+              "target": "alias(puppetlabs.master.example.com.http-client.experimental.with-metric-id.puppetdb.facts.find.full-response.mean, 'PuppetDB: find facts')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http-client.experimental.with-metric-id.puppetdb.resource.search.full-response.mean, 'PuppetDB: search resources')"
+              "target": "alias(puppetlabs.master.example.com.http-client.experimental.with-metric-id.puppetdb.resource.search.full-response.mean, 'PuppetDB: search resources')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http-client.experimental.with-metric-id.puppetdb.query.full-response.mean, 'PuppetDB: query')"
+              "target": "alias(puppetlabs.master.example.com.http-client.experimental.with-metric-id.puppetdb.query.full-response.mean, 'PuppetDB: query')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http-client.experimental.with-metric-id.puppet.report.http.full-response.mean, 'Http report processor')"
+              "target": "alias(puppetlabs.master.example.com.http-client.experimental.with-metric-id.puppet.report.http.full-response.mean, 'Http report processor')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http-client.experimental.with-metric-id.classifier.nodes.full-response.mean, 'Classifier: find node')"
+              "target": "alias(puppetlabs.master.example.com.http-client.experimental.with-metric-id.classifier.nodes.full-response.mean, 'Classifier: find node')"
             }
           ],
           "thresholds": [],
@@ -591,22 +591,22 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(scale(puppetlabs.localhost.http.puppet-v3-catalog-.*.-percentage,100),'catalog')"
+              "target": "alias(scale(puppetlabs.master.example.com.http.puppet-v3-catalog-.*.-percentage,100),'catalog')"
             },
             {
-              "target": "alias(scale(puppetlabs.localhost.http.puppet-v3-report-.*.-percentage,100),'report')"
+              "target": "alias(scale(puppetlabs.master.example.com.http.puppet-v3-report-.*.-percentage,100),'report')"
             },
             {
-              "target": "alias(scale(puppetlabs.localhost.http.puppet-v3-node-.*.-percentage,100),'node')"
+              "target": "alias(scale(puppetlabs.master.example.com.http.puppet-v3-node-.*.-percentage,100),'node')"
             },
             {
-              "target": "alias(scale(puppetlabs.localhost.http.puppet-v3-file_metadatas-.*.-percentage,100),'file_metadatas')"
+              "target": "alias(scale(puppetlabs.master.example.com.http.puppet-v3-file_metadatas-.*.-percentage,100),'file_metadatas')"
             },
             {
-              "target": "alias(scale(puppetlabs.localhost.http.puppet-v3-file_metadata-.*.-percentage,100),'file_metadata')"
+              "target": "alias(scale(puppetlabs.master.example.com.http.puppet-v3-file_metadata-.*.-percentage,100),'file_metadata')"
             },
             {
-              "target": "alias(scale(puppetlabs.localhost.http.puppet-v3-file_content-.*.-percentage,100),'file_content')"
+              "target": "alias(scale(puppetlabs.master.example.com.http.puppet-v3-file_content-.*.-percentage,100),'file_content')"
             }
           ],
           "thresholds": [],
@@ -679,10 +679,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(puppetlabs.localhost.http.active-requests.count,'active requests')"
+              "target": "alias(puppetlabs.master.example.com.http.active-requests.count,'active requests')"
             },
             {
-              "target": "alias(puppetlabs.localhost.http.active-histo.mean, 'average number of active requests')"
+              "target": "alias(puppetlabs.master.example.com.http.active-histo.mean, 'average number of active requests')"
             }
           ],
           "thresholds": [],
@@ -753,16 +753,16 @@
           "steppedLine": false,
           "targets": [
             {
-              "target": "alias(puppetlabs.localhost.file-sync-storage.commit-timer.mean,'commit')"
+              "target": "alias(puppetlabs.master.example.com.file-sync-storage.commit-timer.mean,'commit')"
             },
             {
-              "target": "alias(puppetlabs.localhost.file-sync-client.clone-timer.mean,'client clone')"
+              "target": "alias(puppetlabs.master.example.com.file-sync-client.clone-timer.mean,'client clone')"
             },
             {
-              "target": "alias(puppetlabs.localhost.file-sync-client.fetch-timer.mean,'client fetch')"
+              "target": "alias(puppetlabs.master.example.com.file-sync-client.fetch-timer.mean,'client fetch')"
             },
             {
-              "target": "alias(puppetlabs.localhost.file-sync-client.sync-timer.mean,'client sync')"
+              "target": "alias(puppetlabs.master.example.com.file-sync-client.sync-timer.mean,'client sync')"
             }
           ],
           "thresholds": [],
