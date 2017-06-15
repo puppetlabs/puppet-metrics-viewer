@@ -33,19 +33,26 @@ which docker-compose || { echo "ERROR: docker-compose required. Please install d
 trap finish EXIT INT
 
 echo "Getting the latest images"
+echo "docker-pull"
 docker-compose pull --ignore-pull-failures >/dev/null 2>&1
+echo "docker-up"
 docker-compose up -d
 
-echo -n "Waiting for graphite to be ready..."
+echo "Waiting for graphite to be ready..."
 until nc -zv localhost 2003 >/dev/null 2>&1; do
   sleep 1
 done
 echo "ready"
 
-echo -n "Loading data..."
+echo "Extracting data from tarballs..."
 find $datadir -type f -ctime -$RETENTION_DAYS -iname "*.bz2" -exec bash -c 'tar jxf "{}" -C $(dirname "{}")' \; 2>/dev/null;
+
+echo "Deleting json files past retention_days..."
+NUM_DEL=$(find $datadir -type f -mtime +$RETENTION_DAYS -iname "*.json" -delete -print | wc -l)
+echo "Deleted $NUM_DEL files past retention_days"
+
+echo "Loading data..."
 ../json2graphite.rb --pattern "$datadir/"'**/*.json' --netcat localhost
-echo " loaded"
 
 echo
 echo "Metrics ready! View at http://localhost:3000"
