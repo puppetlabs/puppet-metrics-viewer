@@ -45,10 +45,10 @@ done
 echo "ready"
 
 echo "Extracting data from tarballs..."
-find $datadir -type f -ctime -$RETENTION_DAYS -iname "*.bz2" -exec bash -c 'tar jxf "{}" -C $(dirname "{}")' \; 2>/dev/null;
+find "$datadir" -type f -ctime -$RETENTION_DAYS -iname "*.bz2" -exec bash -c 'tar jxf "{}" -C $(dirname "{}")' \; 2>/dev/null;
 
 echo "Deleting json files past retention_days..."
-NUM_DEL=$(find $datadir -type f -mtime +$RETENTION_DAYS -iname "*.json" -delete -print | wc -l)
+NUM_DEL=$(find "$datadir" -type f -mtime +$RETENTION_DAYS -iname "*.json" -delete -print | wc -l)
 echo "Deleted $NUM_DEL files past retention_days"
 
 echo "Loading data..."
