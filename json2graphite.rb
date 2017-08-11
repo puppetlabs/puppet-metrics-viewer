@@ -57,24 +57,28 @@ def parse_file(filename)
 
     if $options[:database] == 'influxdb'
       array = influx_metrics(data, timestamp, parent_key)
+      array.each do |item|
+        puts item
+      end
     else
       array = metrics(data, timestamp, parent_key)
-    end
-    lines = array.map do |item|
-      item.split('\n')
-    end.flatten
-
-    lines.each do |line|
-      if nc
-        # IS THIS NECESSARY??? I HAVE NO IDEA!!!
-        #sleep 0.0001
-        nc.write("#{line}\n")
-      else
-        puts(line)
+      lines = array.map do |item|
+        item.split('\n')
+        #puts "item: #{item.class}"
+      end.flatten
+      lines.each do |line|
+        if nc
+          # IS THIS NECESSARY??? I HAVE NO IDEA!!!
+          #sleep 0.0001
+          nc.write("#{line}\n")
+        else
+          puts(line)
+        end
       end
     end
   rescue Exception => e
     STDERR.puts "ERROR: #{filename}: #{e.message}"
+    #STDERR.puts "#{e.backtrace}"
   end
 end
 
@@ -244,11 +248,19 @@ def influx_metrics(data, timestamp, parent_key = nil)
       end
       field_value = value
       tag_set = influx_tag_parser(temp_key)
-      puts "#{tag_set} #{field_key}=#{field_value} #{timestamp.to_i}"
+      "#{tag_set} #{field_key}=#{field_value} #{timestamp.to_i}"
     when Array
-      #puts "key-array: #{current_key}"
-      #puts value
-      #puts "timestamp: #{timestamp.to_i}"
+      temp_key = current_key.split(".")
+      tag_set = influx_tag_parser(temp_key)
+      value.each do |metrics|
+        #check if route-id
+        ot_tag=safe_name(metrics["route-id"])
+        metrics.each do |key, value|
+          if value.is_a? Numeric
+            "#{tag_set},route-id=#{ot_tag} #{key}=#{value} #{timestamp.to_i}"
+          end
+        end
+      end
     else
       nil
     end
