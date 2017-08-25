@@ -4,6 +4,8 @@ require 'json'
 require 'time'
 require 'optparse'
 require 'socket'
+require 'net/http'
+require 'uri'
 
 class Nc
   def initialize(host)
@@ -39,6 +41,9 @@ end
 
 def parse_file(filename)
   nc = nil
+  if $options[:database] == 'influxdb'
+    ip = $options[:host]
+  end
   if $options[:host]
     nc = Nc.new($options[:host])
   end
@@ -57,9 +62,7 @@ def parse_file(filename)
 
     if $options[:database] == 'influxdb'
       array = influx_metrics(data, timestamp, parent_key)
-      array.each do |item|
-        puts item
-      end
+      insert_data(array.join("\n"), ip)
     else
       array = metrics(data, timestamp, parent_key)
       lines = array.map do |item|
@@ -137,6 +140,23 @@ def return_tag(a, n)
     else return "none"
   end
 end
+end
+
+def insert_data(body, ip)
+  uri = URI.parse("http://#{ip}:8086/write?db=metrics_dashboard&precision=s")
+  puts uri
+  request = Net::HTTP::Post.new(uri)
+  request.body = body
+
+  req_options = {
+    use_ssl: uri.scheme == "https",
+  }
+
+  response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+    response = http.request(request)
+    http.finish
+    response
+  end
 end
 
 def metrics(data, timestamp, parent_key = nil)
