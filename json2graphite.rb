@@ -197,7 +197,7 @@ def influx_tag_parser(tag)
 
   if tag.include? "servers"
     n = tag.index "servers"
-    server_name = tag[n.to_i + 1]
+    server_name = $options[:server_tag] || tag[n.to_i + 1]
     tag_set = "server=#{server_name},"
     tag.delete_at(tag.index("servers")+1)
     tag.delete("servers")
@@ -305,6 +305,7 @@ OptionParser.new do |opt|
   opt.on('--pattern PATTERN') { |o| $options[:pattern] = o }
   opt.on('--netcat HOST') { |o| $options[:host] = o }
   opt.on('--convert-to FORMAT') { |o| $options[:output_format] = o }
+  opt.on('--server-tag SERVER_NAME') { |o| $options[:server_tag] = o }
 end.parse!
 
 if $options[:pattern]
