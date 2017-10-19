@@ -62,7 +62,6 @@ def parse_file(filename)
       array = metrics(data, timestamp, parent_key)
       lines = array.map do |item|
         item.split('\n')
-        #puts "item: #{item.class}"
       end.flatten
       lines.each do |line|
         if nc
@@ -76,7 +75,6 @@ def parse_file(filename)
     end
   rescue => e
     STDERR.puts "ERROR: #{filename}: #{e.message}"
-    #STDERR.puts "#{e.backtrace}"
   end
 end
 
