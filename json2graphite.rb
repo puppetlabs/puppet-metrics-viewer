@@ -7,41 +7,62 @@ require 'socket'
 require 'net/http'
 require 'uri'
 
-class Nc
-  def initialize(host)
-    @host = host
+class NetworkOutput
+  # TODO: Support HTTPS.
+  def initialize(host_url)
+    @url = URI.parse(host_url) unless host_url.is_a?(URI)
+    open
   end
 
-  def socket
-    return @socket if @socket && !@socket.closed?
-    @socket = TCPSocket.new(@host, 2003)
+  def open
+    return if @output
+
+    @output = case @url.scheme
+              when 'tcp'
+                TCPSocket.new(@url.host, @url.port)
+              when 'http'
+                http = Net::HTTP.new(@url.hostname, @url.port)
+                http.keep_alive_timeout = 20
+                http.start
+
+                http
+              end
   end
 
   def write(str, timeout = 1)
-    begin
-      socket.write("#{str}\r\n")
-    rescue Errno::EPIPE, Errno::EHOSTUNREACH, Errno::ECONNREFUSED
-      @socket = nil
-      STDERR.puts "WARNING: write to #{@host} failed; sleeping for #{timeout} seconds and retrying..."
-      sleep timeout
-      write(str, timeout * 2)
+    case @url.scheme
+    when 'tcp'
+      begin
+        @output.write(str)
+      rescue Errno::EPIPE, Errno::EHOSTUNREACH, Errno::ECONNREFUSED
+        close
+        STDERR.puts "WARNING: write to #{@host} failed; sleeping for #{timeout} seconds and retrying..."
+        sleep timeout
+        open
+        write(str, timeout * 2)
+      end
+    when 'http'
+      request = Net::HTTP::Post.new(@url)
+      request['Connection'] = 'keep-alive'
+      response = @output.request(request, str)
+
+      STDERR.puts "POST: #{@url} #{response.code}"
     end
   end
 
-  def close_socket
-    @socket.close if @socket
-    @socket = nil
+  def close
+    case @url.scheme
+    when 'tcp'
+      @output.close
+    when 'http'
+      @output.finish
+    end
+  ensure
+    @output = nil
   end
 end
 
 def parse_file(filename)
-  nc = nil
-  if $options[:output_format] == 'influxdb'
-    ip = $options[:host]
-  end
-  if $options[:host]
-    nc = Nc.new($options[:host])
-  end
   begin
     data = JSON.parse(File.read(filename))
 
@@ -57,17 +78,17 @@ def parse_file(filename)
 
     if $options[:output_format] == 'influxdb'
       array = influx_metrics(data, timestamp, parent_key)
-      insert_data(array.join("\n"), ip)
+      $net_output.write(array.join("\n"))
     else
       array = metrics(data, timestamp, parent_key)
       lines = array.map do |item|
         item.split('\n')
       end.flatten
       lines.each do |line|
-        if nc
+        if $options[:host]
           # IS THIS NECESSARY??? I HAVE NO IDEA!!!
           #sleep 0.0001
-          nc.write("#{line}\n")
+          $net_output.write("#{line}\n\r\n")
         else
           puts(line)
         end
@@ -133,23 +154,6 @@ def return_tag(a, n)
     else return "none"
   end
 end
-end
-
-def insert_data(body, ip)
-  uri = URI.parse("http://#{ip}:8086/write?db=#{$options[:influx_db]}&precision=s")
-  puts uri
-  request = Net::HTTP::Post.new(uri)
-  request.body = body
-
-  req_options = {
-    use_ssl: uri.scheme == "https",
-  }
-
-  response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-    response = http.request(request)
-    http.finish
-    response
-  end
 end
 
 def metrics(data, timestamp, parent_key = nil)
@@ -311,6 +315,18 @@ OptionParser.new do |opt|
   opt.on('--influx-db DATABASE_NAME') {|o| $options[:influx_db] = o }
 end.parse!
 
+if $options[:host]
+  url = case $options[:output_format]
+        when 'influxdb'
+          raise ArgumentError, "--influx-db must be passsed along with --netcat" unless $options[:influx_db]
+          "http://#{$options[:host]}:8086/write?db=#{$options[:influx_db]}&precision=s"
+        else
+          "tcp://#{$options[:host]}:2003"
+        end
+
+  $net_output = NetworkOutput.new(url)
+end
+
 if $options[:pattern]
   Dir.glob($options[:pattern]).each do |filename|
     parse_file(filename)
@@ -320,3 +336,5 @@ end
 while filename = ARGV.shift
   parse_file(filename)
 end
+
+$net_output.close if $options[:host]
