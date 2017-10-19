@@ -263,16 +263,36 @@ def influx_metrics(data, timestamp, parent_key = nil)
       tag_set = influx_tag_parser(temp_key)
       "#{tag_set} #{field_key}=#{field_value} #{timestamp.to_i}"
     when Array
+      # Puppet Profiler metric.
+      pp_metric = case current_key
+                  when /resource-metrics\Z/
+                    "resource"
+                  when /function-metrics\Z/
+                    "function"
+                  when /catalog-metrics\Z/
+                    "metric"
+                  when /http-metrics\Z/
+                    "route-id"
+                  else
+                    # Skip all other array valued metrics.
+                    next
+                  end
+
       temp_key = current_key.split(".")
       tag_set = influx_tag_parser(temp_key)
-      value.each do |metrics|
-        #check if route-id
-        ot_tag=safe_name(metrics["route-id"])
-        metrics.each do |key, value|
-          if value.is_a? Numeric
-            "#{tag_set},route-id=#{ot_tag} #{key}=#{value} #{timestamp.to_i}"
-          end
-        end
+
+      value.map do |metrics|
+        working_set = metrics.dup
+        entry_name = working_set.delete(pp_metric)
+        next if entry_name.nil?
+
+        # Strip characters reserved by InfluxDB.
+        entry_name.gsub(/\s,=/, '')
+        leader = "#{tag_set},name=#{entry_name}"
+
+        measurements = working_set.map {|k,v| [k,v].join("=")}.join(',')
+
+        "#{leader} #{measurements} #{timestamp.to_i}"
       end
     else
       nil
