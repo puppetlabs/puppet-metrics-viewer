@@ -14,12 +14,7 @@ class Nc
 
   def socket
     return @socket if @socket && !@socket.closed?
-    if $options[:database] == 'influxdb'
-      @socket = TCPSocket.new(@host, 8086)
-      puts "8086"
-    else
-      @socket = TCPSocket.new(@host, 2003)
-    end
+    @socket = TCPSocket.new(@host, 2003)
   end
 
   def write(str, timeout = 1)
