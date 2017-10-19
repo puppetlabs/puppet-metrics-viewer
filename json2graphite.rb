@@ -136,7 +136,7 @@ end
 end
 
 def insert_data(body, ip)
-  uri = URI.parse("http://#{ip}:8086/write?db=metrics_dashboard&precision=s")
+  uri = URI.parse("http://#{ip}:8086/write?db=#{$options[:influx_db]}&precision=s")
   puts uri
   request = Net::HTTP::Post.new(uri)
   request.body = body
@@ -306,6 +306,9 @@ OptionParser.new do |opt|
   opt.on('--netcat HOST') { |o| $options[:host] = o }
   opt.on('--convert-to FORMAT') { |o| $options[:output_format] = o }
   opt.on('--server-tag SERVER_NAME') { |o| $options[:server_tag] = o }
+
+  # InfluxDB options
+  opt.on('--influx-db DATABASE_NAME') {|o| $options[:influx_db] = o }
 end.parse!
 
 if $options[:pattern]
