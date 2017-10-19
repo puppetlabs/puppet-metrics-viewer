@@ -63,39 +63,25 @@ class NetworkOutput
 end
 
 def parse_file(filename)
-  begin
-    data = JSON.parse(File.read(filename))
+  data = JSON.parse(File.read(filename))
 
-    # Newer versions of the log tool insert a timestamp field into the JSON.
-    if data['timestamp']
-      timestamp = Time.parse(data.delete('timestamp'))
-      parent_key = nil
-    else
-      timestamp = get_timestamp(filename)
-      # The only data supported in the older log tool comes from puppetserver.
-      parent_key = 'servers.' + get_hoststr(filename) + '.puppetserver'
-    end
+  # Newer versions of the log tool insert a timestamp field into the JSON.
+  if data['timestamp']
+    timestamp = Time.parse(data.delete('timestamp'))
+    parent_key = nil
+  else
+    timestamp = get_timestamp(filename)
+    # The only data supported in the older log tool comes from puppetserver.
+    parent_key = 'servers.' + get_hoststr(filename) + '.puppetserver'
+  end
 
-    if $options[:output_format] == 'influxdb'
-      array = influx_metrics(data, timestamp, parent_key)
-      $net_output.write(array.join("\n"))
-    else
-      array = metrics(data, timestamp, parent_key)
-      lines = array.map do |item|
-        item.split('\n')
-      end.flatten
-      lines.each do |line|
-        if $options[:host]
-          # IS THIS NECESSARY??? I HAVE NO IDEA!!!
-          #sleep 0.0001
-          $net_output.write("#{line}\n\r\n")
-        else
-          puts(line)
-        end
-      end
-    end
-  rescue => e
-    STDERR.puts "ERROR: #{filename}: #{e.message}"
+  case $options[:output_format]
+  when 'influxdb'
+    influx_metrics(data, timestamp, parent_key).join("\n")
+  else
+    metrics(data, timestamp, parent_key).map do |item|
+      item.split('\n')
+    end.flatten.join("\r\n")
   end
 end
 
@@ -327,14 +313,21 @@ if $options[:host]
   $net_output = NetworkOutput.new(url)
 end
 
-if $options[:pattern]
-  Dir.glob($options[:pattern]).each do |filename|
-    parse_file(filename)
-  end
-end
+data_files = ARGV
+data_files += Dir.glob($options[:pattern]) if $options[:pattern]
 
-while filename = ARGV.shift
-  parse_file(filename)
+data_files.each do |filename|
+  begin
+    converted_data = parse_file(filename)
+
+    if $options[:host]
+      $net_output.write(converted_data)
+    else
+      STDOUT.write(converted_data)
+    end
+  rescue => e
+    STDERR.puts "ERROR: #{filename}: #{e.message}"
+  end
 end
 
 $net_output.close if $options[:host]
