@@ -36,7 +36,7 @@ end
 
 def parse_file(filename)
   nc = nil
-  if $options[:database] == 'influxdb'
+  if $options[:output_format] == 'influxdb'
     ip = $options[:host]
   end
   if $options[:host]
@@ -55,7 +55,7 @@ def parse_file(filename)
       parent_key = 'servers.' + get_hoststr(filename) + '.puppetserver'
     end
 
-    if $options[:database] == 'influxdb'
+    if $options[:output_format] == 'influxdb'
       array = influx_metrics(data, timestamp, parent_key)
       insert_data(array.join("\n"), ip)
     else
@@ -284,7 +284,7 @@ $options = {}
 OptionParser.new do |opt|
   opt.on('--pattern PATTERN') { |o| $options[:pattern] = o }
   opt.on('--netcat HOST') { |o| $options[:host] = o }
-  opt.on('--database DATABASE') { |o| $options[:database] = o }
+  opt.on('--convert-to FORMAT') { |o| $options[:output_format] = o }
 end.parse!
 
 if $options[:pattern]
