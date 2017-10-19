@@ -64,7 +64,7 @@ def parse_file(filename)
         puts(line)
       end
     end
-  rescue Exception => e
+  rescue => e
     STDERR.puts "ERROR: #{filename}: #{e.message}"
   end
 end
