@@ -6,13 +6,14 @@ require 'optparse'
 require 'socket'
 
 class Nc
-  def initialize(host)
+  def initialize(host, port)
     @host = host
+    @port = port
   end
 
   def socket
     return @socket if @socket && !@socket.closed?
-    @socket = TCPSocket.new(@host, 2003)
+    @socket = TCPSocket.new(@host, @port)
   end
 
   def write(str, timeout = 1)
@@ -20,7 +21,7 @@ class Nc
       socket.write("#{str}\r\n")
     rescue Errno::EPIPE, Errno::EHOSTUNREACH, Errno::ECONNREFUSED
       @socket = nil
-      STDERR.puts "WARNING: write to #{@host} failed; sleeping for #{timeout} seconds and retrying..."
+      STDERR.puts "WARNING: write to #{@host}:#{@port} failed; sleeping for #{timeout} seconds and retrying..."
       sleep timeout
       write(str, timeout * 2)
     end
@@ -35,7 +36,7 @@ end
 def parse_file(filename)
   nc = nil
   if $options[:host]
-    nc = Nc.new($options[:host])
+    nc = Nc.new($options[:host], $options[:port])
   end
   begin
     data = JSON.parse(File.read(filename))
@@ -149,10 +150,11 @@ def metrics(data, timestamp, parent_key = nil)
   end.flatten.compact
 end
 
-$options = {}
+$options = { :port => "2003" }
 OptionParser.new do |opt|
   opt.on('--pattern PATTERN') { |o| $options[:pattern] = o }
   opt.on('--netcat HOST') { |o| $options[:host] = o }
+  opt.on('--port PORT') { |p| $options[:port] = p }
 end.parse!
 
 if $options[:pattern]
