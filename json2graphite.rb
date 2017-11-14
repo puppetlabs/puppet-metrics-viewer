@@ -224,6 +224,22 @@ def influx_tag_parser(tag)
     tag.delete("broker-service")
   end
 
+  if tag.include?('Queue')
+    n = tag.index('Queue')
+    amq_destination_name = tag[n + 1]
+    tag_set = "#{tag_set}amq-destination-type=Queue,amq-destination-name=#{amq_destination_name}"
+
+    tag.slice!(n, 2)
+  end
+
+  if tag.include?('Topic')
+    n = tag.index('Topic')
+    amq_destination_name = tag[n + 1]
+    tag_set = "#{tag_set}amq-destination-type=Topic,amq-destination-name=#{amq_destination_name}"
+
+    tag.slice!(n, 2)
+  end
+
   if tag.length > 1
     measurement = tag.compact.join('.')
     tag_set = "#{measurement},#{tag_set}"
@@ -234,7 +250,6 @@ def influx_tag_parser(tag)
 
   tag_set = remove_trailing_comma(tag_set)
   return tag_set
-
 end
 
 def influx_metrics(data, timestamp, parent_key = nil)
