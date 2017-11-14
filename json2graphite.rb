@@ -4,6 +4,8 @@ require 'json'
 require 'time'
 require 'optparse'
 require 'socket'
+require 'net/http'
+require 'uri'
 
 class Nc
   def initialize(host)
@@ -12,7 +14,12 @@ class Nc
 
   def socket
     return @socket if @socket && !@socket.closed?
-    @socket = TCPSocket.new(@host, 2003)
+    if $options[:database] == 'influxdb'
+      @socket = TCPSocket.new(@host, 8086)
+      puts "8086"
+    else
+      @socket = TCPSocket.new(@host, 2003)
+    end
   end
 
   def write(str, timeout = 1)
@@ -34,6 +41,9 @@ end
 
 def parse_file(filename)
   nc = nil
+  if $options[:database] == 'influxdb'
+    ip = $options[:host]
+  end
   if $options[:host]
     nc = Nc.new($options[:host])
   end
@@ -50,22 +60,28 @@ def parse_file(filename)
       parent_key = 'servers.' + get_hoststr(filename) + '.puppetserver'
     end
 
-    array = metrics(data, timestamp, parent_key)
-    lines = array.map do |item|
-      item.split('\n')
-    end.flatten
-
-    lines.each do |line|
-      if nc
-        # IS THIS NECESSARY??? I HAVE NO IDEA!!!
-        #sleep 0.0001
-        nc.write("#{line}\n")
-      else
-        puts(line)
+    if $options[:database] == 'influxdb'
+      array = influx_metrics(data, timestamp, parent_key)
+      insert_data(array.join("\n"), ip)
+    else
+      array = metrics(data, timestamp, parent_key)
+      lines = array.map do |item|
+        item.split('\n')
+        #puts "item: #{item.class}"
+      end.flatten
+      lines.each do |line|
+        if nc
+          # IS THIS NECESSARY??? I HAVE NO IDEA!!!
+          #sleep 0.0001
+          nc.write("#{line}\n")
+        else
+          puts(line)
+        end
       end
     end
   rescue => e
     STDERR.puts "ERROR: #{filename}: #{e.message}"
+    #STDERR.puts "#{e.backtrace}"
   end
 end
 
@@ -115,6 +131,34 @@ def error_name(str)
   end
 end
 
+def return_tag(a, n)
+  if a[n].is_a? String
+    return a[n]
+  else
+    if n > -1
+      return_tag(a, n-1)
+    else return "none"
+  end
+end
+end
+
+def insert_data(body, ip)
+  uri = URI.parse("http://#{ip}:8086/write?db=metrics_dashboard&precision=s")
+  puts uri
+  request = Net::HTTP::Post.new(uri)
+  request.body = body
+
+  req_options = {
+    use_ssl: uri.scheme == "https",
+  }
+
+  response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+    response = http.request(request)
+    http.finish
+    response
+  end
+end
+
 def metrics(data, timestamp, parent_key = nil)
   data.collect do |key, value|
     current_key = [parent_key, safe_name(key)].compact.join('.')
@@ -149,10 +193,105 @@ def metrics(data, timestamp, parent_key = nil)
   end.flatten.compact
 end
 
+def remove_trailing_comma(str)
+    str.nil? ? nil : str.chomp(",")
+end
+
+def influx_tag_parser(tag)
+  delete_set = ["status", "metrics", "routes", "status-service", "experimental", "app", "max", "min", "used", "init", "committed", "aggregate", "mean", "std-dev", "count", "total", "1", "5", "15"]
+  tag = tag - delete_set
+  tag_set = nil
+
+  if tag.include? "servers"
+    n = tag.index "servers"
+    server_name = tag[n.to_i + 1]
+    tag_set = "server=#{server_name},"
+    tag.delete_at(tag.index("servers")+1)
+    tag.delete("servers")
+  end
+
+  if tag.include? "orchestrator"
+    tag_set = "#{tag_set}service=orchestrator,"
+    tag.delete("orchestrator")
+  end
+
+  if tag.include? "puppet_server"
+    tag_set = "#{tag_set}service=puppet_server,"
+    tag.delete("puppet_server")
+  end
+
+  if tag.include? "puppetdb"
+    tag_set = "#{tag_set}service=puppetdb,"
+    tag.delete("puppetdb")
+  end
+
+  if tag.include? "gc-stats"
+    n = tag.index "gc-stats"
+    gcstats_name = tag[n.to_i + 1]
+    tag_set = "#{tag_set}gc-stats=#{gcstats_name},"
+    tag.delete_at(tag.index("gc-stats")+1)
+    tag.delete("gc-stats")
+  end
+
+  if tag.include? "broker-service"
+    n = tag.index "broker-service"
+    brokerservice_name = tag[n.to_i + 1]
+    tag_set = "#{tag_set}broker-service_name=#{brokerservice_name},"
+    tag.delete_at(tag.index("broker-service")+1)
+    tag.delete("broker-service")
+  end
+
+  if tag.length > 1
+    measurement = tag.compact.join('.')
+    tag_set = "#{measurement},#{tag_set}"
+  elsif tag.length == 1
+    measurement = tag[0]
+    tag_set = "#{measurement},#{tag_set}"
+  end
+
+  tag_set = remove_trailing_comma(tag_set)
+  return tag_set
+
+end
+
+def influx_metrics(data, timestamp, parent_key = nil)
+  data.collect do |key, value|
+    current_key = [parent_key, safe_name(key)].compact.join('.')
+    case value
+    when Hash
+      influx_metrics(value, timestamp, current_key)
+    when Numeric
+      temp_key = current_key.split(".")
+      field_key = return_tag(temp_key, temp_key.length)
+      if field_key.eql? "none"
+        break
+      end
+      field_value = value
+      tag_set = influx_tag_parser(temp_key)
+      "#{tag_set} #{field_key}=#{field_value} #{timestamp.to_i}"
+    when Array
+      temp_key = current_key.split(".")
+      tag_set = influx_tag_parser(temp_key)
+      value.each do |metrics|
+        #check if route-id
+        ot_tag=safe_name(metrics["route-id"])
+        metrics.each do |key, value|
+          if value.is_a? Numeric
+            "#{tag_set},route-id=#{ot_tag} #{key}=#{value} #{timestamp.to_i}"
+          end
+        end
+      end
+    else
+      nil
+    end
+  end.flatten.compact
+end
+
 $options = {}
 OptionParser.new do |opt|
   opt.on('--pattern PATTERN') { |o| $options[:pattern] = o }
   opt.on('--netcat HOST') { |o| $options[:host] = o }
+  opt.on('--database DATABASE') { |o| $options[:database] = o }
 end.parse!
 
 if $options[:pattern]
