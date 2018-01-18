@@ -21,9 +21,9 @@ You can then view the metrics by visting `http://localhost:3000` in your browser
  - username: `admin`
  - password: `admin`.
 
-### Export data to pre-existing Graphite
+### Export data to pre-existing Graphite or InfluxDB
 
-The `json2graphite.rb` script can be used to transform data in the JSON files into a format that can be fed into any Graphite instance.
+The `json2graphite.rb` script can be used to transform data in the JSON files into a format that can be fed into any Graphite or InfluxDB instance.
 
 Usage:
 
@@ -31,18 +31,36 @@ Usage:
 ./json2graphite.rb [--pattern PATTERN] [filename_1 ... filename_n]
 ```
 
-Output will be lines in Graphite's plain text input format. This output can be fed through a tool like `nc` to inject it into Graphite.
+Output will be lines in Graphite's plain text input format. The output can be sent to a host running graphite by passing a hostname to the `--netcat` flag.
 
 Examples:
 
 ```
-./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json | nc localhost 2003
+./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json --netcat localhost
+```
+
+The `--netcat` flag will send output to port 2003. A custom port can be used by piping stdout to `nc` instead:
+
+```
+./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json | nc localhost 4242
 ```
 
 The simple example can be used for small numbers of files. When more files exist than can be referenced as arguments, use `--pattern`.
 
 ```
-./json2graphite.rb --pattern '~/Downloads/logdump/puppetserver/*.json' | nc localhost 2003
+./json2graphite.rb --pattern '~/Downloads/logdump/puppetserver/*.json' --netcat localhost
 ```
 
 The `--pattern` flag accepts a Ruby glob argument, which Ruby will then expand into a list of files to process.
+
+InfluxDB output can be produced using the `--convert-to` flag:
+
+```
+./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json --convert-to influxdb
+```
+
+When `--netcat` is used with InfluxDB output, data will be sent to port 8086. The `--influx-db` flag must also be used to specify a database to write to:
+
+```
+./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json --convert-to influxdb --netcat localhost --influx-db pe-metrics
+```

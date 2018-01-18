@@ -4,68 +4,84 @@ require 'json'
 require 'time'
 require 'optparse'
 require 'socket'
+require 'net/http'
+require 'uri'
 
-class Nc
-  def initialize(host)
-    @host = host
+class NetworkOutput
+  # TODO: Support HTTPS.
+  def initialize(host_url)
+    @url = URI.parse(host_url) unless host_url.is_a?(URI)
+    open
   end
 
-  def socket
-    return @socket if @socket && !@socket.closed?
-    @socket = TCPSocket.new(@host, 2003)
+  def open
+    return if @output
+
+    @output = case @url.scheme
+              when 'tcp'
+                TCPSocket.new(@url.host, @url.port)
+              when 'http'
+                http = Net::HTTP.new(@url.hostname, @url.port)
+                http.keep_alive_timeout = 20
+                http.start
+
+                http
+              end
   end
 
   def write(str, timeout = 1)
-    begin
-      socket.write("#{str}\r\n")
-    rescue Errno::EPIPE, Errno::EHOSTUNREACH, Errno::ECONNREFUSED
-      @socket = nil
-      STDERR.puts "WARNING: write to #{@host} failed; sleeping for #{timeout} seconds and retrying..."
-      sleep timeout
-      write(str, timeout * 2)
+    case @url.scheme
+    when 'tcp'
+      begin
+        @output.write(str)
+      rescue Errno::EPIPE, Errno::EHOSTUNREACH, Errno::ECONNREFUSED
+        close
+        STDERR.puts "WARNING: write to #{@host} failed; sleeping for #{timeout} seconds and retrying..."
+        sleep timeout
+        open
+        write(str, timeout * 2)
+      end
+    when 'http'
+      request = Net::HTTP::Post.new(@url)
+      request['Connection'] = 'keep-alive'
+      response = @output.request(request, str)
+
+      STDERR.puts "POST: #{@url} #{response.code}"
     end
   end
 
-  def close_socket
-    @socket.close if @socket
-    @socket = nil
+  def close
+    case @url.scheme
+    when 'tcp'
+      @output.close
+    when 'http'
+      @output.finish
+    end
+  ensure
+    @output = nil
   end
 end
 
 def parse_file(filename)
-  nc = nil
-  if $options[:host]
-    nc = Nc.new($options[:host])
+  data = JSON.parse(File.read(filename))
+
+  # Newer versions of the log tool insert a timestamp field into the JSON.
+  if data['timestamp']
+    timestamp = Time.parse(data.delete('timestamp'))
+    parent_key = nil
+  else
+    timestamp = get_timestamp(filename)
+    # The only data supported in the older log tool comes from puppetserver.
+    parent_key = 'servers.' + get_hoststr(filename) + '.puppetserver'
   end
-  begin
-    data = JSON.parse(File.read(filename))
 
-    # Newer versions of the log tool insert a timestamp field into the JSON.
-    if data['timestamp']
-      timestamp = Time.parse(data.delete('timestamp'))
-      parent_key = nil
-    else
-      timestamp = get_timestamp(filename)
-      # The only data supported in the older log tool comes from puppetserver.
-      parent_key = 'servers.' + get_hoststr(filename) + '.puppetserver'
-    end
-
-    array = metrics(data, timestamp, parent_key)
-    lines = array.map do |item|
+  case $options[:output_format]
+  when 'influxdb'
+    influx_metrics(data, timestamp, parent_key).join("\n")
+  else
+    metrics(data, timestamp, parent_key).map do |item|
       item.split('\n')
-    end.flatten
-
-    lines.each do |line|
-      if nc
-        # IS THIS NECESSARY??? I HAVE NO IDEA!!!
-        #sleep 0.0001
-        nc.write("#{line}\n")
-      else
-        puts(line)
-      end
-    end
-  rescue => e
-    STDERR.puts "ERROR: #{filename}: #{e.message}"
+    end.flatten.join("\r\n")
   end
 end
 
@@ -115,6 +131,17 @@ def error_name(str)
   end
 end
 
+def return_tag(a, n)
+  if a[n].is_a? String
+    return a[n]
+  else
+    if n > -1
+      return_tag(a, n-1)
+    else return "none"
+  end
+end
+end
+
 def metrics(data, timestamp, parent_key = nil)
   data.collect do |key, value|
     current_key = [parent_key, safe_name(key)].compact.join('.')
@@ -149,18 +176,158 @@ def metrics(data, timestamp, parent_key = nil)
   end.flatten.compact
 end
 
+def remove_trailing_comma(str)
+    str.nil? ? nil : str.chomp(",")
+end
+
+def influx_tag_parser(tag)
+  delete_set = ["status", "metrics", "routes", "status-service", "experimental", "app", "max", "min", "used", "init", "committed", "aggregate", "mean", "std-dev", "count", "total", "1", "5", "15"]
+  tag = tag - delete_set
+  tag_set = nil
+
+  if tag.include? "servers"
+    n = tag.index "servers"
+    server_name = $options[:server_tag] || tag[n.to_i + 1]
+    tag_set = "server=#{server_name},"
+    tag.delete_at(tag.index("servers")+1)
+    tag.delete("servers")
+  end
+
+  if tag.include? "orchestrator"
+    tag_set = "#{tag_set}service=orchestrator,"
+    tag.delete("orchestrator")
+  end
+
+  if tag.include? "puppet_server"
+    tag_set = "#{tag_set}service=puppet_server,"
+    tag.delete("puppet_server")
+  end
+
+  if tag.include? "puppetdb"
+    tag_set = "#{tag_set}service=puppetdb,"
+    tag.delete("puppetdb")
+  end
+
+  if tag.include? "gc-stats"
+    n = tag.index "gc-stats"
+    gcstats_name = tag[n.to_i + 1]
+    tag_set = "#{tag_set}gc-stats=#{gcstats_name},"
+    tag.delete_at(tag.index("gc-stats")+1)
+    tag.delete("gc-stats")
+  end
+
+  if tag.include? "broker-service"
+    n = tag.index "broker-service"
+    brokerservice_name = tag[n.to_i + 1]
+    tag_set = "#{tag_set}broker-service_name=#{brokerservice_name},"
+    tag.delete_at(tag.index("broker-service")+1)
+    tag.delete("broker-service")
+  end
+
+  if tag.length > 1
+    measurement = tag.compact.join('.')
+    tag_set = "#{measurement},#{tag_set}"
+  elsif tag.length == 1
+    measurement = tag[0]
+    tag_set = "#{measurement},#{tag_set}"
+  end
+
+  tag_set = remove_trailing_comma(tag_set)
+  return tag_set
+
+end
+
+def influx_metrics(data, timestamp, parent_key = nil)
+  data.collect do |key, value|
+    current_key = [parent_key, safe_name(key)].compact.join('.')
+    case value
+    when Hash
+      influx_metrics(value, timestamp, current_key)
+    when Numeric
+      temp_key = current_key.split(".")
+      field_key = return_tag(temp_key, temp_key.length)
+      if field_key.eql? "none"
+        break
+      end
+      field_value = value
+      tag_set = influx_tag_parser(temp_key)
+      "#{tag_set} #{field_key}=#{field_value} #{timestamp.to_i}"
+    when Array
+      # Puppet Profiler metric.
+      pp_metric = case current_key
+                  when /resource-metrics\Z/
+                    "resource"
+                  when /function-metrics\Z/
+                    "function"
+                  when /catalog-metrics\Z/
+                    "metric"
+                  when /http-metrics\Z/
+                    "route-id"
+                  else
+                    # Skip all other array valued metrics.
+                    next
+                  end
+
+      temp_key = current_key.split(".")
+      tag_set = influx_tag_parser(temp_key)
+
+      value.map do |metrics|
+        working_set = metrics.dup
+        entry_name = working_set.delete(pp_metric)
+        next if entry_name.nil?
+
+        # Strip characters reserved by InfluxDB.
+        entry_name.gsub(/\s,=/, '')
+        leader = "#{tag_set},name=#{entry_name}"
+
+        measurements = working_set.map {|k,v| [k,v].join("=")}.join(',')
+
+        "#{leader} #{measurements} #{timestamp.to_i}"
+      end
+    else
+      nil
+    end
+  end.flatten.compact
+end
+
 $options = {}
 OptionParser.new do |opt|
   opt.on('--pattern PATTERN') { |o| $options[:pattern] = o }
   opt.on('--netcat HOST') { |o| $options[:host] = o }
+  opt.on('--convert-to FORMAT') { |o| $options[:output_format] = o }
+  opt.on('--server-tag SERVER_NAME') { |o| $options[:server_tag] = o }
+
+  # InfluxDB options
+  opt.on('--influx-db DATABASE_NAME') {|o| $options[:influx_db] = o }
 end.parse!
 
-if $options[:pattern]
-  Dir.glob($options[:pattern]).each do |filename|
-    parse_file(filename)
+if $options[:host]
+  url = case $options[:output_format]
+        when 'influxdb'
+          raise ArgumentError, "--influx-db must be passsed along with --netcat" unless $options[:influx_db]
+          "http://#{$options[:host]}:8086/write?db=#{$options[:influx_db]}&precision=s"
+        else
+          "tcp://#{$options[:host]}:2003"
+        end
+
+  $net_output = NetworkOutput.new(url)
+end
+
+data_files = ARGV
+data_files += Dir.glob($options[:pattern]) if $options[:pattern]
+
+data_files.each do |filename|
+  begin
+    converted_data = parse_file(filename)
+
+    if $options[:host]
+      $net_output.write(converted_data)
+    else
+      STDOUT.write(converted_data)
+    end
+  rescue => e
+    STDERR.puts "ERROR: #{filename}: #{e.message}"
   end
 end
 
-while filename = ARGV.shift
-  parse_file(filename)
-end
+$net_output.close if $options[:host]
