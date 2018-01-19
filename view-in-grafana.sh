@@ -10,7 +10,7 @@ else
 fi
 
 
-cd "$(dirname "$0")/grafana-puppetserver"
+cd "$(dirname "$0")/influxdb-grafana"
 
 usage()
 {
@@ -53,7 +53,7 @@ NUM_DEL=$(find "$datadir" -type f -mtime +$RETENTION_DAYS -iname "*.json" -delet
 echo "Deleted $NUM_DEL files past retention_days"
 
 echo "Loading data..."
-../json2graphite.rb --pattern "$datadir/"'**/*.json' --netcat localhost
+../json2graphite.rb --pattern "$datadir/"'**/*.json' --netcat localhost --convert-to influxdb --influx-db archive
 
 echo
 echo "Metrics ready! View at http://localhost:3000"
