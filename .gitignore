@@ -1,3 +1,4 @@
 target
 *.pyc
 *.swp
+influxdb-grafana/grafana/imports/*

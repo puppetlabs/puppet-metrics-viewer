@@ -23,6 +23,12 @@ finish() {
   docker-compose down --volumes
 }
 
+download_dashboards() {
+    wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppetlabs-pe_metrics_dashboard/master/files/PuppetDB_Performance.json
+    wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppetlabs-pe_metrics_dashboard/master/files/PuppetDB_Workload.json
+    wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppetlabs-pe_metrics_dashboard/master/files/Puppetserver_Performance.json
+}
+
 # VALIDATION
 
 [ ! -d "$datadir" ] && { echo "ERROR: First argument must be a directory."; usage; exit 1; }
@@ -35,6 +41,8 @@ trap finish EXIT INT
 echo "Getting the latest images"
 echo "docker-pull"
 docker-compose pull --ignore-pull-failures >/dev/null 2>&1
+echo "Getting the latest graphs"
+download_dashboards
 echo "docker-up"
 docker-compose up -d
 
