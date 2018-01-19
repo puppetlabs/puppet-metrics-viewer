@@ -294,6 +294,7 @@ $options = {}
 OptionParser.new do |opt|
   opt.on('--pattern PATTERN') { |o| $options[:pattern] = o }
   opt.on('--netcat HOST') { |o| $options[:host] = o }
+  opt.on('--port PORT')   { |p| $options[:port] = p }
   opt.on('--convert-to FORMAT') { |o| $options[:output_format] = o }
   opt.on('--server-tag SERVER_NAME') { |o| $options[:server_tag] = o }
 
@@ -305,9 +306,11 @@ if $options[:host]
   url = case $options[:output_format]
         when 'influxdb'
           raise ArgumentError, "--influx-db must be passsed along with --netcat" unless $options[:influx_db]
-          "http://#{$options[:host]}:8086/write?db=#{$options[:influx_db]}&precision=s"
+          port = $options[:port] || "8086"
+          "http://#{$options[:host]}:#{port}/write?db=#{$options[:influx_db]}&precision=s"
         else
-          "tcp://#{$options[:host]}:2003"
+          port = $options[:port] || "2003"
+          "tcp://#{$options[:host]}:#{port}"
         end
 
   $net_output = NetworkOutput.new(url)
