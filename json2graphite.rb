@@ -65,6 +65,10 @@ end
 def parse_file(filename)
   data = JSON.parse(File.read(filename))
 
+  parse_input(data)
+end
+
+def parse_input( data )
   # Newer versions of the log tool insert a timestamp field into the JSON.
   if data['timestamp']
     timestamp = Time.parse(data.delete('timestamp'))
@@ -316,8 +320,16 @@ if $options[:host]
   $net_output = NetworkOutput.new(url)
 end
 
-data_files = ARGV
+data_files = []
 data_files += Dir.glob($options[:pattern]) if $options[:pattern]
+
+#http://ruby-doc.org/core-1.9.3/ARGF.html#method-i-filename
+while ARGF.filename != '-'
+  filename = ARGF.filename
+  data_files += [filename]
+  ARGF.skip
+  break if filename == ARGF.filename
+end
 
 data_files.each do |filename|
   begin
@@ -330,6 +342,20 @@ data_files.each do |filename|
     end
   rescue => e
     STDERR.puts "ERROR: #{filename}: #{e.message}"
+  end
+end
+
+if ARGF.filename == '-'
+  begin
+    converted_data = parse_input( JSON.parse(ARGF.read) )
+
+    if $options[:host]
+      $net_output.write(converted_data)
+    else
+      STDOUT.write(converted_data)
+    end
+  rescue => e
+    STDERR.puts "ERROR: During read from STDIN: #{e.message}"
   end
 end
 

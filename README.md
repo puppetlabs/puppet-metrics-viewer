@@ -64,3 +64,13 @@ When `--netcat` is used with InfluxDB output, data will be sent to port 8086. Th
 ```
 ./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json --convert-to influxdb --netcat localhost --influx-db pe-metrics
 ```
+
+### Pipe data into json2graphite.rb
+
+You can pipe the output of the metrics script from pe_metric_curl_cron_jobs directly into json2graphite.rb such as:
+
+```
+/opt/puppetlabs/pe_metric_curl_cron_jobs/scripts/tk_metrics --metrics_type puppetdb | ./json2graphite.rb
+```
+
+However, you cannot pipe metrics data in and read a file in the same invocation of the script.  
