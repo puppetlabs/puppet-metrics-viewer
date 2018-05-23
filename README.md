@@ -1,7 +1,7 @@
 # puppet-metrics-viewer
 
 This repo contains a CLI tool for generating visualizations of your puppet
-metrics data.  It assumes you have collected the metrics using  [npwalker/pe_metric_curl_cron_jobs](https://github.com/npwalker/pe_metric_curl_cron_jobs).
+metrics data.  It assumes you have collected the metrics using  [puppetlabs/puppet_metrics_collector](https://forge.puppet.com/puppetlabs/puppet_metrics_collector).
 
 ## View metrics in Grafana
 
@@ -14,14 +14,42 @@ To run this code, you will need [Docker](https://www.docker.com/products/overvie
 With Docker installed, you can run the script `view-in-grafana.sh`, passing it the directory containing the data files to load into Graphite. e.g.
 
 ```
-./view-in-grafana.sh ~/Downloads/pe_metrics/puppet_server
+./view-in-grafana.sh ~/Downloads/pe_metrics/puppetserver
 ```
 
 You can then view the metrics by visting `http://localhost:3000` in your browser.
  - username: `admin`
  - password: `admin`.
 
-### Export data to pre-existing Graphite or InfluxDB
+### Advanced Options for viewing metrics with grafana
+The `view-in-grafana.sh` script has several options that can change the behavior of the environment.
+
+#### Limit the data that will be imported
+
+By default, the script uses a retention of 30 days. You can specify a different retention peroid if desired.
+
+```
+./view-in-grafana.sh ~/Downloads/pe_metrics/puppetserver 10
+```
+
+_Note:_ `.json` files outside the retention peroid will be deleted as the asumption is that they exist in the tar balls.
+
+#### Use InfluxDB as the backend database
+By default, graphite is used to store the data. New capabilities have been built to use InfluxDB as the back end database in `json2graphite.rb` and can be used as the back end database container.
+
+```
+./view-in-grafana.sh -i ~/Downloads/pe_metrics/puppetserver
+```
+
+#### Build the local containers instead of from Dockerhub
+To test dashboard updates, you can specify the `-b` option to build the local `grafana-puppetserver` container.
+
+```
+./view-in-grafana.sh -b ~/Downloads/pe_metrics/puppetserver
+
+```
+
+## Export data to pre-existing Graphite or InfluxDB
 
 The `json2graphite.rb` script can be used to transform data in the JSON files into a format that can be fed into any Graphite or InfluxDB instance.
 
