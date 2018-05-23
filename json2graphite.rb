@@ -278,6 +278,11 @@ def influx_metrics(data, timestamp, parent_key = nil)
                     "metric"
                   when /http-metrics\Z/
                     "route-id"
+                  when /borrowed-instances\Z/
+                    longest_borrow = value.map {|h| h['duration-millis']}.sort.last
+                    tag_set = influx_tag_parser(current_key.split('.'))
+
+                    next "#{tag_set} longest-borrow=#{longest_borrow} #{timestamp.to_i}"
                   else
                     # Skip all other array valued metrics.
                     next
