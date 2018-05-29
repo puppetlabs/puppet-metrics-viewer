@@ -2,9 +2,9 @@
 
 # VARIABLES
 BUILDLOCAL=false
-INFLUXDB=false
-CONTAINERPATH="grafana-puppetserver"
-NETCATARGS='--netcat localhost'
+DATABASE="influxdb"
+CONTAINERPATH="influxdb-grafana"
+NETCATARGS='--netcat localhost --convert-to influxdb --influx-db archive'
 RETENTION_DAYS=30
 
 # ARGUMENT PARSING
@@ -13,20 +13,28 @@ usage()
 {
   echo
   echo "USAGE: view-in-grafana.sh <options> [directory] <retention_days>"
-  echo "Options: -i Enable InfluxDB"
+  echo "Options: -d [influxdb|graphite] Enable InfluxDB or Graphite as the back end database. Defaults to InfluxDB"
   echo "         -b Build local containers from docker-compose"
 }
 
-while getopts ":bi" opt; do
+while getopts ":bd:" opt; do
   case $opt in
     b)
       BUILDLOCAL=true
       ;;
-    i)
-      echo "Using InfluxDB"
-      INFLUXDB=true
-      CONTAINERPATH="influxdb-grafana"
-      NETCATARGS='--netcat localhost --convert-to influxdb --influx-db archive'
+    d)
+      if [ "$OPTARG" == "graphite" ]; then
+        echo "Using Graphite"
+        DATABASE="graphite"
+        CONTAINERPATH="grafana-puppetserver"
+        NETCATARGS='--netcat localhost'
+      elif [ "$OPTARG" == "influxdb" ]; then
+        echo "Using InfluxDB"
+      else
+        echo "Invalid database: $OPTARG" >&2
+        usage
+        exit 1
+      fi
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -72,7 +80,7 @@ get_latest_containers() {
     echo "Downloading latest containers"
     docker-compose pull --ignore-pull-failures >/dev/null 2>&1
   fi
-  if [ $INFLUXDB ]; then
+  if [ "$DATABASE" == "influxdb" ]; then
     echo "Getting the latest graphs"
     download_dashboards
   fi
@@ -108,7 +116,7 @@ NUM_DEL=$(find "$datadir" -type f -mtime +$RETENTION_DAYS -iname "*.json" -delet
 echo "Deleted $NUM_DEL files past retention_days"
 
 echo "Loading data..."
-../json2graphite.rb --pattern "$datadir/"'**/*.json' $NETCATARGS >/dev/null
+../json2graphite.rb --pattern "$datadir/"'**/*.json' $NETCATARGS 2> /dev/null
 
 echo
 echo "Metrics ready! View at http://localhost:3000"

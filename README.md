@@ -34,11 +34,11 @@ By default, the script uses a retention of 30 days. You can specify a different 
 
 _Note:_ `.json` files outside the retention peroid will be deleted as the asumption is that they exist in the tar balls.
 
-#### Use InfluxDB as the backend database
-By default, graphite is used to store the data. New capabilities have been built to use InfluxDB as the back end database in `json2graphite.rb` and can be used as the back end database container.
+#### Use Graphite as the backend database
+By default, InfluxDB is used to store the data. New capabilities have been built to use InfluxDB as the back end database in `json2graphite.rb` and can be used as the back end database container. Graphite can be used as well with the following option. 
 
 ```
-./view-in-grafana.sh -i ~/Downloads/pe_metrics/puppetserver
+./view-in-grafana.sh -d graphite  ~/Downloads/pe_metrics/puppetserver
 ```
 
 #### Build the local containers instead of from Dockerhub
