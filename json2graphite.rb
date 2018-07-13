@@ -119,7 +119,15 @@ def array_cipher
     'function-metrics' => {
       'pkey' => 'function',
       'keys' => :all
-    }
+    },
+    'catalog-metrics' => {
+      'pkey' => 'metric',
+      'keys' => :all
+    },
+    'resource-metrics' => {
+      'pkey' => 'resource',
+      'keys' => :all
+    },
   }
 end
 
