@@ -282,7 +282,7 @@ def influx_metrics(data, timestamp, parent_key = nil)
                     "resource"
                   when /function-metrics\Z/
                     "function"
-                  when /catalog-metrics\Z/
+                  when /catalog-metrics\Z/, /puppetdb-metrics\Z/
                     "metric"
                   when /http-metrics\Z/
                     "route-id"
