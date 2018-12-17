@@ -14,7 +14,7 @@ To run this code, you will need [Docker](https://www.docker.com/products/overvie
 With Docker installed, you can run the script `view-in-grafana.sh`, passing it the directory containing the data files to load into Graphite. e.g.
 
 ```
-./view-in-grafana.sh ~/Downloads/pe_metrics/puppetserver
+./view-in-grafana.sh ~/Downloads/puppet_metrics/puppetserver
 ```
 
 You can then view the metrics by visting `http://localhost:3000` in your browser.
@@ -29,7 +29,7 @@ The `view-in-grafana.sh` script has several options that can change the behavior
 By default, the script uses a retention of 30 days. You can specify a different retention peroid if desired.
 
 ```
-./view-in-grafana.sh ~/Downloads/pe_metrics/puppetserver 10
+./view-in-grafana.sh ~/Downloads/puppet_metrics/puppetserver 10
 ```
 
 _Note:_ `.json` files outside the retention peroid will be deleted as the asumption is that they exist in the tar balls.
@@ -38,14 +38,14 @@ _Note:_ `.json` files outside the retention peroid will be deleted as the asumpt
 By default, InfluxDB is used to store the data. New capabilities have been built to use InfluxDB as the back end database in `json2graphite.rb` and can be used as the back end database container. Graphite can be used as well with the following option. 
 
 ```
-./view-in-grafana.sh -d graphite  ~/Downloads/pe_metrics/puppetserver
+./view-in-grafana.sh -d graphite  ~/Downloads/puppet_metrics/puppetserver
 ```
 
 #### Build the local containers instead of from Dockerhub
 To test dashboard updates, you can specify the `-b` option to build the local `grafana-puppetserver` container.
 
 ```
-./view-in-grafana.sh -b ~/Downloads/pe_metrics/puppetserver
+./view-in-grafana.sh -b ~/Downloads/puppet_metrics/puppetserver
 
 ```
 

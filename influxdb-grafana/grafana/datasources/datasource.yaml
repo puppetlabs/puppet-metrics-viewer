@@ -2,7 +2,7 @@
 # whats available in the datbase
 datasources:
   # <string, required> name of the datasource. Required
-- name: influxdb_pe_metrics
+- name: influxdb_puppet_metrics
   # <string, required> datasource type. Required
   type: influxdb
   # <string, required> access mode. direct or proxy. Required
