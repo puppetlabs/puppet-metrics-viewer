@@ -1,6 +1,8 @@
 FROM grafana/grafana
 MAINTAINER Reid Vandewiele <reid@puppet.com>
 
+USER root
+
 COPY build/* /grafana-puppet/
 RUN apt-get update && \
     apt-get -y install curl && \
@@ -8,6 +10,8 @@ RUN apt-get update && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/*
+
+USER grafana
 
 ENTRYPOINT /grafana-puppet/run.sh
 
