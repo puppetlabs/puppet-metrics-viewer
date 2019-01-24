@@ -1,7 +1,7 @@
 {
   "name":"graphite-statsd",
   "type":"graphite",
-  "url":"http://graphite-statsd:80",
+  "url":"http://graphite-statsd:81",
   "access":"proxy",
   "basicAuth":false
 }
