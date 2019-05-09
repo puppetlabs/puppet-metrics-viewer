@@ -69,6 +69,7 @@ download_dashboards() {
   wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/PuppetDB_Performance.json
   wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/PuppetDB_Workload.json
   wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/Puppetserver_Performance.json
+  wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/Archive_File_Sync.json
 }
 
 get_latest_containers() {
