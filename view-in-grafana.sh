@@ -64,12 +64,18 @@ finish() {
   docker-compose down --volumes
 }
 
+download_file() {
+  curl -O --silent -k $1 || { echo "ERROR: Unable to download file from ${1}."; exit 1; }
+}
+
 download_dashboards() {
   mkdir -p ./grafana/imports
-  wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/PuppetDB_Performance.json
-  wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/PuppetDB_Workload.json
-  wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/Puppetserver_Performance.json
-  wget -q -N -P ./grafana/imports https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/Archive_File_Sync.json
+  cd ./grafana/imports
+  download_file https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/PuppetDB_Performance.json
+  download_file https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/PuppetDB_Workload.json
+  download_file https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/Puppetserver_Performance.json
+  download_file https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/Archive_File_Sync.json
+  cd - > /dev/null
 }
 
 get_latest_containers() {
