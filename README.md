@@ -1,11 +1,11 @@
 # puppet-metrics-viewer
 
-This repo contains a CLI tool for generating visualizations of your puppet
+This repository contains a CLI tool for generating visualizations of your puppet
 metrics data.  It assumes you have collected the metrics using  [puppetlabs/puppet_metrics_collector](https://forge.puppet.com/puppetlabs/puppet_metrics_collector).
 
 ## View metrics in Grafana
 
-![screenshot](./images/grafana.jpg)
+![Screen shot](./images/grafana.jpg)
 
  The `json2graphite.rb` script can be used to transform data in JSON files into a format that can be fed into Graphite.
 
@@ -17,7 +17,7 @@ With Docker installed, you can run the script `view-in-grafana.sh`, passing it t
 ./view-in-grafana.sh ~/Downloads/puppet_metrics/puppetserver
 ```
 
-You can then view the metrics by visting `http://localhost:3000` in your browser.
+You can then view the metrics by visiting `http://localhost:3000` in your browser.
  - username: `admin`
  - password: `admin`.
 
@@ -26,22 +26,22 @@ The `view-in-grafana.sh` script has several options that can change the behavior
 
 #### Limit the data that will be imported
 
-By default, the script uses a retention of 30 days. You can specify a different retention peroid if desired.
+By default, the script uses a retention of 30 days. You can specify a different retention period if desired.
 
 ```
 ./view-in-grafana.sh ~/Downloads/puppet_metrics/puppetserver 10
 ```
 
-_Note:_ `.json` files outside the retention peroid will be deleted as the asumption is that they exist in the tar balls.
+_Note:_ `.json` files outside the retention period will be deleted as the assumption is that they exist in the tar archives.
 
 #### Use Graphite as the backend database
-By default, InfluxDB is used to store the data. New capabilities have been built to use InfluxDB as the back end database in `json2graphite.rb` and can be used as the back end database container. Graphite can be used as well with the following option. 
+By default, InfluxDB is used to store the data. New capabilities have been built to use InfluxDB as the backend database in `json2graphite.rb` and can be used as the backend database container. Graphite can be used as well with the following option. 
 
 ```
 ./view-in-grafana.sh -d graphite  ~/Downloads/puppet_metrics/puppetserver
 ```
 
-#### Build the local containers instead of from Dockerhub
+#### Build the local containers instead of from Docker hub
 To test dashboard updates, you can specify the `-b` option to build the local `grafana-puppetserver` container.
 
 ```
@@ -67,7 +67,7 @@ Examples:
 ./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json --netcat localhost
 ```
 
-The `--netcat` flag will send output to port 2003. A custom port can be used by piping stdout to `nc` instead:
+The `--netcat` flag will send output to port 2003. A custom port can be used by piping STDOUT to `nc` instead:
 
 ```
 ./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json | nc localhost 4242
