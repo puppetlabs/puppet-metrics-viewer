@@ -1,0 +1,59 @@
+# list of datasources to insert/update depending 
+# whats available in the datbase
+datasources:
+  # <string, required> name of the datasource. Required
+- name: influxdb_puppet_metrics
+  # <string, required> datasource type. Required
+  type: influxdb
+  # <string, required> access mode. direct or proxy. Required
+  access: proxy
+  # <int> org id. will default to org_id 1 if not specified
+  org_id: 1
+  # <string> url
+  url: http://influxdb:8086
+  # <string> database password, if used
+  password: admin
+  # <string> database user, if used
+  user: admin
+  # <string> database name, if used
+  database: archive
+  # <bool> enable/disable basic auth
+  basic_auth:
+  # <string> basic auth username
+  basic_auth_user:
+  # <string> basic auth password
+  basic_auth_password:
+  # <bool> enable/disable with credentials headers
+  with_credentials:
+  # <bool> mark as default datasource. Max one per org
+  is_default: true
+  # <map> fields that will be converted to json and stored in json_data
+  editable: true 
+
+- name: Graphite
+  # <string, required> datasource type. Required
+  type: influxdb
+  # <string, required> access mode. direct or proxy. Required
+  access: proxy
+  # <int> org id. will default to org_id 1 if not specified
+  org_id: 1
+  # <string> url
+  url: http://influxdb:8086
+  # <string> database password, if used
+  password: admin
+  # <string> database user, if used
+  user: admin
+  # <string> database name, if used
+  database: graphite
+  # <bool> enable/disable basic auth
+  basic_auth:
+  # <string> basic auth username
+  basic_auth_user:
+  # <string> basic auth password
+  basic_auth_password:
+  # <bool> enable/disable with credentials headers
+  with_credentials:
+  # <bool> mark as default datasource. Max one per org
+  is_default: false
+  # <map> fields that will be converted to json and stored in json_data
+  editable: true 

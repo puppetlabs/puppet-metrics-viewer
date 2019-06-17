@@ -1,5 +1,6 @@
 FROM grafana/grafana
 MAINTAINER Reid Vandewiele <reid@puppet.com>
+USER root
 
 USER root
 
