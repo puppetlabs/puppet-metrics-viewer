@@ -4,7 +4,7 @@
 BUILDLOCAL=false
 DATABASE="influxdb"
 CONTAINERPATH="influxdb-grafana"
-NETCATARGS='--netcat localhost --convert-to influxdb --influx-db archive'
+NETCATARGS='--netcat 127.0.0.1 --convert-to influxdb --influx-db archive'
 RETENTION_DAYS=30
 
 # ARGUMENT PARSING
@@ -27,7 +27,7 @@ while getopts ":bd:" opt; do
         echo "Using Graphite"
         DATABASE="graphite"
         CONTAINERPATH="grafana-puppetserver"
-        NETCATARGS='--netcat localhost'
+        NETCATARGS='--netcat 127.0.0.1'
       elif [ "$OPTARG" == "influxdb" ]; then
         echo "Using InfluxDB"
       else
@@ -113,9 +113,12 @@ find "$datadir" -type f -ctime -$RETENTION_DAYS -iname "*.bz2" -exec bash -c 'ta
 find "$datadir" -type f -ctime -$RETENTION_DAYS -iname "*.gz" -exec bash -c 'tar xf "{}" -C $(dirname "{}")' \; 2>/dev/null;
 
 echo "Waiting for database to be ready..."
-until nc -zv localhost 2003 >/dev/null 2>&1; do
+timeout=60
+until nc -zv 127.0.0.1 2003 >/dev/null 2>&1 || (( timeout <= 0 )); do
+  (( timeout-- ))
   sleep 1
 done
+(( timeout <= 0 )) && { echo "ERROR: Unable to connect to the database. Is docker running?"; exit 1; }
 echo "ready"
 
 echo "Deleting json files past ${RETENTION_DAYS} retention_days..."
@@ -126,7 +129,7 @@ echo "Loading data..."
 ../json2graphite.rb --pattern "$datadir/"'**/*.json' $NETCATARGS 2> /dev/null
 
 echo
-echo "Metrics ready! View at http://localhost:3000"
+echo "Metrics ready! View at http://127.0.0.1:3000"
 echo "Username: admin"
 echo "Password: admin"
 echo
