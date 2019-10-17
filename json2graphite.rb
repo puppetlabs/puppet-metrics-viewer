@@ -354,7 +354,7 @@ data_files.each do |filename|
     if $options[:host]
       $net_output.write(converted_data)
     else
-      STDOUT.write(converted_data)
+      STDOUT.puts(converted_data)
     end
   rescue => e
     STDERR.puts "ERROR: #{filename}: #{e.message}"
