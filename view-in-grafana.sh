@@ -124,7 +124,7 @@ NUM_DEL=$(find "$datadir" -type f -mtime +"${RETENTION_DAYS}" -iname "*.json" -d
 echo "Deleted $NUM_DEL files past retention_days"
 
 echo "Loading data..."
-../json2graphite.rb --pattern "$datadir/**/*.json" "${NETCATARGS[@]}" 2>/dev/null
+../json2timeseriesdb --pattern "$datadir/**/*.json" "${NETCATARGS[@]}" 2>/dev/null
 
 cat <<EOF
 Metrics ready! View at http://127.0.0.1:3000
