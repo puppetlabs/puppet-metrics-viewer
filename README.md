@@ -1,94 +1,113 @@
 # puppet-metrics-viewer
 
-This repository contains a CLI tool for generating visualizations of your puppet
-metrics data.  It assumes you have collected the metrics using  [puppetlabs/puppet_metrics_collector](https://forge.puppet.com/puppetlabs/puppet_metrics_collector).
+This repository contains a command line tool for generating visualizations of your Puppet metrics data in Docker.
 
-## View metrics in Grafana
+It assumes you have collected the metrics using the [puppetlabs/puppet_metrics_collector](https://forge.puppet.com/puppetlabs/puppet_metrics_collector) module.
+
+It downloads a script from that module, and Grafana dashboards from the [puppetlabs/puppet_metrics_dashboard](https://github.com/puppetlabs/puppet_metrics_dashboard) module.
+
+## Viewing metrics in Grafana
 
 ![Screen shot](./images/grafana.jpg)
 
- The `json2graphite.rb` script can be used to transform data in JSON files into a format that can be fed into Graphite.
+To use this tool, you will need [docker](https://www.docker.com/products/overview) (and docker-compose) installed.
+_Tip:_ If you're using a Mac, use the official Mac packages for Docker instead of installing from Brew.
+(If you figure out how to use this with Docker installed from Brew, let us know.)
 
-To run this code, you will need [Docker](https://www.docker.com/products/overview) (and docker-compose) installed.  _Tip:_ If you're using a Mac, use the official Mac packages instead of installing from brew.  (If you figure out how to use this with docker installed from brew let us know)
+With Docker installed, you can run the `view-in-grafana.sh` script, passing it the directory containing the data files to load.
 
-With Docker installed, you can run the script `view-in-grafana.sh`, passing it the directory containing the data files to load into Graphite. e.g.
+For example:
 
 ```
 ./view-in-grafana.sh ~/Downloads/puppet_metrics/puppetserver
 ```
 
-You can then view the metrics by visiting `http://localhost:3000` in your browser.
+You can then view the metrics by visiting `http://localhost:3000` in a web browser.
+
  - username: `admin`
  - password: `admin`.
 
-### Advanced Options for viewing metrics with grafana
+## Advanced options for viewing metrics with Grafana
+
 The `view-in-grafana.sh` script has several options that can change the behavior of the environment.
 
-#### Limit the data that will be imported
+### Limit the data that will be imported
 
-By default, the script uses a retention of 30 days. You can specify a different retention period if desired.
+By default, the script uses a data retention of 30 days.
+You can optionally specify a different data retention period.
+
+For example:
 
 ```
 ./view-in-grafana.sh ~/Downloads/puppet_metrics/puppetserver 10
 ```
 
-_Note:_ `.json` files outside the retention period will be deleted as the assumption is that they exist in the tar archives.
+_Note:_ `.json` files outside the retention period will be deleted, as the assumption is that they exist in the tar archives.
 
-#### Use Graphite as the backend database
-By default, InfluxDB is used to store the data. New capabilities have been built to use InfluxDB as the backend database in `json2graphite.rb` and can be used as the backend database container. Graphite can be used as well with the following option. 
+### Use Graphite as the backend database
+
+By default, InfluxDB is used to store data.
+You can optionally specify Graphite.
+
+For example:
 
 ```
 ./view-in-grafana.sh -d graphite  ~/Downloads/puppet_metrics/puppetserver
 ```
 
-#### Build the local containers instead of from Docker hub
-To test dashboard updates, you can specify the `-b` option to build the local `grafana-puppetserver` container.
+### Build the local containers instead of from Docker Hub
+
+To test Grafana updates, you can specify the `-b` option to build the local `grafana-puppetserver` container.
+
+For example:
 
 ```
 ./view-in-grafana.sh -b ~/Downloads/puppet_metrics/puppetserver
-
 ```
 
-## Export data to pre-existing Graphite or InfluxDB
+## Load to a pre-existing InfluxDB or Graphite database backend
 
-The `json2graphite.rb` script can be used to transform data in the JSON files into a format that can be fed into any Graphite or InfluxDB instance.
+The `json2timeseriesdb` script from [puppetlabs/puppet_metrics_collector](https://forge.puppet.com/puppetlabs/puppet_metrics_collector) module can be used to transform data in the JSON files into a format that can be imported into any InfluxDB or Graphite database backend.
 
 Usage:
 
 ```
-./json2graphite.rb [--pattern PATTERN] [filename_1 ... filename_n]
+./json2timeseriesdb [--pattern PATTERN] [filename_1 ... filename_n]
 ```
 
-Output will be lines in Graphite's plain text input format. The output can be sent to a host running graphite by passing a hostname to the `--netcat` flag.
-
-Examples:
-
-```
-./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json --netcat localhost
-```
-
-The `--netcat` flag will send output to port 2003. A custom port can be used by piping STDOUT to `nc` instead:
+Output is in Graphite's plain text input format.
+The output can be sent to a host running Graphite by passing its hostname to the `--netcat` flag:
 
 ```
-./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json | nc localhost 4242
+./json2timeseriesdb ~/Downloads/logdump/puppetserver/*.json --netcat localhost
 ```
 
-The simple example can be used for small numbers of files. When more files exist than can be referenced as arguments, use `--pattern`.
+Data will be sent to port 2003.
+A custom port can be used by sending output to `nc`:
 
 ```
-./json2graphite.rb --pattern '~/Downloads/logdump/puppetserver/*.json' --netcat localhost
+./json2timeseriesdb ~/Downloads/logdump/puppetserver/*.json | nc localhost 4242
+```
+
+Output in InfluxDB's format can be specified using the `--convert-to` flag:
+
+```
+./json2timeseriesdb ~/Downloads/logdump/puppetserver/*.json --convert-to influxdb
+```
+
+When `--netcat` is used with InfluxDB, the `--influx-db` flag must be used to specify an InfluxDB database:
+
+```
+./json2timeseriesdb ~/Downloads/logdump/puppetserver/*.json --convert-to influxdb --netcat localhost --influx-db pe-metrics
+```
+
+(Data will be sent to port 8086.)
+
+The above examples can be used for small numbers of files.
+When more files exist than can be referenced as arguments, use `--pattern`:
+
+```
+./json2timeseriesdb --pattern '~/Downloads/logdump/puppetserver/*.json' --netcat localhost
 ```
 
 The `--pattern` flag accepts a Ruby glob argument, which Ruby will then expand into a list of files to process.
-
-InfluxDB output can be produced using the `--convert-to` flag:
-
-```
-./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json --convert-to influxdb
-```
-
-When `--netcat` is used with InfluxDB output, data will be sent to port 8086. The `--influx-db` flag must also be used to specify a database to write to:
-
-```
-./json2graphite.rb ~/Downloads/logdump/puppetserver/*.json --convert-to influxdb --netcat localhost --influx-db pe-metrics
-```

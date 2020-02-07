@@ -17,6 +17,9 @@ download_file() {
 }
 
 download_dashboards() {
+  download_file https://raw.githubusercontent.com/puppetlabs/puppetlabs-puppet_metrics_collector/master/files/json2timeseriesdb
+  chmod +x json2timeseriesdb
+
   mkdir -p ./grafana/imports
   cd ./grafana/imports || exit
   download_file https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/PuppetDB_Performance.json
@@ -124,7 +127,7 @@ NUM_DEL=$(find "$datadir" -type f -mtime +"${RETENTION_DAYS}" -iname "*.json" -d
 echo "Deleted $NUM_DEL files past retention_days"
 
 echo "Loading data..."
-../json2graphite.rb --pattern "$datadir/**/*.json" "${NETCATARGS[@]}" 2>/dev/null
+../json2timeseriesdb --pattern "$datadir/**/*.json" "${NETCATARGS[@]}" 2>/dev/null
 
 cat <<EOF
 Metrics ready! View at http://127.0.0.1:3000
