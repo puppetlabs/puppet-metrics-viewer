@@ -17,9 +17,6 @@ download_file() {
 }
 
 download_dashboards() {
-  download_file https://raw.githubusercontent.com/puppetlabs/puppetlabs-puppet_metrics_collector/master/files/json2timeseriesdb
-  chmod +x json2timeseriesdb
-
   mkdir -p ./grafana/imports
   cd ./grafana/imports || exit
   download_file https://raw.githubusercontent.com/puppetlabs/puppet_metrics_dashboard/master/files/PuppetDB_Performance.json
@@ -94,8 +91,12 @@ type docker-compose &>/dev/null || {
 # Portable way of getting the full path to a directory
 datadir="$(cd "$1" || exit; echo "$PWD")"
 
-# From the end of the full path of this script, strip everything up to the first /
-# i.e. `cd` to the directory containing this script
+# Download json2timeseriesdb to the directory containing this script.
+cd "${BASH_SOURCE[0]%/*}" || exit
+download_file https://raw.githubusercontent.com/puppetlabs/puppetlabs-puppet_metrics_collector/master/files/json2timeseriesdb
+chmod +x json2timeseriesdb
+
+# Change to the directory containing this script.
 cd "${BASH_SOURCE[0]%/*}/${CONTAINERPATH}" || exit
 
 # MAIN SCRIPT
