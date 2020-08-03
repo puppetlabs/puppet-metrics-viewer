@@ -83,8 +83,8 @@ shift $((OPTIND-1))
 # VALIDATION
 [[ ! -d $1 ]] && { echo "ERROR: First argument must be a directory."; usage; exit 1; }
 
-type docker-compose &>/dev/null || {
-  echo "ERROR: docker-compose required. Please install docker-compose."
+type docker-compose >/dev/null 2>&1 || {
+  echo >&2 "ERROR: docker-compose required. Please install docker-compose."
   exit 1
 }
 
@@ -112,6 +112,10 @@ find "$datadir" -type f -ctime -"${RETENTION_DAYS}" -name "*.bz2" -execdir tar j
 find "$datadir" -type f -ctime -"${RETENTION_DAYS}" -name "*.gz" -execdir tar xf "{}" \; 2>/dev/null
 
 echo "Waiting for database to be ready..."
+type nc >/dev/null 2>&1 || {
+  echo >&2 "ERROR: nc required. Please install ncat/netcat."
+  exit 1
+}
 timeout=60
 until nc -zv 127.0.0.1 2003 &>/dev/null || (( timeout <= 0 )); do
   (( timeout-- ))
