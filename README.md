@@ -1,6 +1,6 @@
 # puppet-metrics-viewer
 
-**This project has been archived and will not recieve any further updates** The functionality within this project has been implemented in the (puppet_metrics_dashboard)[https://github.com/puppetlabs/puppet_metrics_dashboard] repository. Please use that repository moving forward.
+**This project has been archived and will not recieve any further updates** The functionality within this project has been implemented in the [puppet_metrics_dashboard](https://github.com/puppetlabs/puppet_metrics_dashboard) repository. Please use that repository moving forward.
 
 This repository contains a command line tool for generating visualizations of your Puppet metrics data in Docker.
 
